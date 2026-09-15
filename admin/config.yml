@@ -1,1 +1,62 @@
 
+backend:
+  name: github
+  repo: mutalaa92/mutalaa92.github.io
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+locale: "ur"
+
+collections:
+  - name: "posts"
+    label: "مضامین"
+    label_singular: "مضمون"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+
+    fields:
+      - label: "عنوان"
+        name: "title"
+        widget: "string"
+
+      - label: "زمرہ"
+        name: "category"
+        widget: "select"
+        options:
+          - "عقیدہ و توحید"
+          - "حدیث و سنت"
+          - "سیرت و تاریخ"
+          - "علماء و ائمہ"
+          - "کتب و تراجم"
+          - "تحقیقی مقالات"
+          - "ردِ باطل فرق و افکار"
+          - "حالاتِ حاضرہ"
+          - "منتخب تحریریں"
+
+      - label: "نمایاں تصویر"
+        name: "image"
+        widget: "image"
+        required: false
+
+      - label: "اشاعت کی تاریخ"
+        name: "date"
+        widget: "datetime"
+        default: "{{now}}"
+
+      - label: "منتخب مضمون"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+
+      - label: "ٹیگز"
+        name: "tags"
+        widget: "list"
+        required: false
+
+      - label: "مضمون"
+        name: "body"
+        widget: "richtext"
