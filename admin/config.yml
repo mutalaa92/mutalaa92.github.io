@@ -6,9 +6,6 @@ backend:
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
-media_library:
-  name: default
-
 site_url: "https://mutalaa92.github.io"
 display_url: "https://mutalaa92.github.io"
 
@@ -66,4 +63,4 @@ collections:
 
       - label: "مضمون"
         name: "body"
-        widget: "markdown"
+        widget: "richtext"
