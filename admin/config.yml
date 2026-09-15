@@ -3,14 +3,10 @@ backend:
   repo: mutalaa92/mutalaa92.github.io
   branch: main
 
-media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
-
 site_url: "https://mutalaa92.github.io"
 display_url: "https://mutalaa92.github.io"
 
 locale: "ur"
-
 collections:
   - name: "posts"
     label: "مضامین"
