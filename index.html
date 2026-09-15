@@ -7,10 +7,19 @@
 
     <title>مطالعہ</title>
 
+    <!-- اردو نستعلیق ویب فونٹ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", serif;
+            font-family: "Noto Nastaliq Urdu", serif;
             background: #f5f1e8;
             color: #26352d;
         }
@@ -26,6 +35,7 @@
         .header h1 {
             margin: 0;
             font-size: 48px;
+            font-weight: 700;
             color: #f4d58d;
         }
 
@@ -33,6 +43,7 @@
             font-size: 20px;
             margin-top: 15px;
             color: #f5f1e8;
+            line-height: 2.2;
         }
 
         .container {
@@ -54,11 +65,13 @@
             color: #174a3a;
             font-size: 30px;
             margin-top: 0;
+            font-weight: 700;
         }
 
         .welcome p {
             font-size: 19px;
-            line-height: 2.2;
+            line-height: 2.5;
+            margin-bottom: 0;
         }
 
         .cards {
@@ -84,11 +97,14 @@
         .card h3 {
             color: #174a3a;
             font-size: 23px;
+            font-weight: 700;
+            margin-top: 0;
         }
 
         .card p {
             color: #555;
-            line-height: 1.9;
+            font-size: 17px;
+            line-height: 2.3;
         }
 
         .footer {
@@ -98,11 +114,13 @@
             text-align: center;
             padding: 25px 15px;
             font-size: 16px;
+            line-height: 2;
         }
 
         @media (max-width: 600px) {
+
             .header {
-                padding: 50px 15px;
+                padding: 45px 15px;
             }
 
             .header h1 {
@@ -111,10 +129,46 @@
 
             .header p {
                 font-size: 17px;
+                line-height: 2.3;
+            }
+
+            .container {
+                margin: 30px auto;
+                padding: 0 15px;
             }
 
             .welcome {
                 padding: 25px 18px;
+            }
+
+            .welcome h2 {
+                font-size: 27px;
+            }
+
+            .welcome p {
+                font-size: 17px;
+                line-height: 2.5;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 22px 18px;
+            }
+
+            .card h3 {
+                font-size: 21px;
+            }
+
+            .card p {
+                font-size: 16px;
+                line-height: 2.4;
+            }
+
+            .footer {
+                font-size: 14px;
             }
         }
     </style>
@@ -131,6 +185,7 @@
 
         <section class="welcome">
             <h2>خوش آمدید</h2>
+
             <p>
                 یہ میری ذاتی علمی ویب سائٹ ہے جہاں ان شاء اللہ
                 مفید مضامین، علمی تحریریں، تحقیقی مواد اور منتخب
