@@ -1,4 +1,3 @@
-
 backend:
   name: github
   repo: mutalaa92/mutalaa92.github.io
@@ -6,6 +5,12 @@ backend:
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
+
+media_library:
+  name: default
+
+site_url: "https://mutalaa92.github.io"
+display_url: "https://mutalaa92.github.io"
 
 locale: "ur"
 
@@ -15,6 +20,8 @@ collections:
     label_singular: "مضمون"
     folder: "_posts"
     create: true
+    extension: "md"
+    format: "frontmatter"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
 
     fields:
@@ -44,7 +51,7 @@ collections:
       - label: "اشاعت کی تاریخ"
         name: "date"
         widget: "datetime"
-        default: "{{now}}"
+        required: true
 
       - label: "منتخب مضمون"
         name: "featured"
@@ -59,4 +66,4 @@ collections:
 
       - label: "مضمون"
         name: "body"
-        widget: "richtext"
+        widget: "markdown"
