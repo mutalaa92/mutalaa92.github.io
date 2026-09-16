@@ -3,60 +3,67 @@ backend:
   repo: mutalaa92/mutalaa92.github.io
   branch: main
 
-site_url: "https://mutalaa92.github.io"
-display_url: "https://mutalaa92.github.io"
+site_url: https://mutalaa.netlify.app
+display_url: https://mutalaa.netlify.app
 
-locale: "ur"
+locale: ur
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
 collections:
-  - name: "posts"
-    label: "مضامین"
-    label_singular: "مضمون"
+
+  - name: posts
+    label: مضامین
+    label_singular: مضمون
     folder: "_posts"
     create: true
-    extension: "md"
-    format: "frontmatter"
+    extension: md
+    format: frontmatter
+
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
 
     fields:
-      - label: "عنوان"
-        name: "title"
-        widget: "string"
 
-      - label: "زمرہ"
-        name: "category"
-        widget: "select"
+      - label: عنوان
+        name: title
+        widget: string
+
+      - label: موضوع
+        name: category
+        widget: select
         options:
-          - "عقیدہ و توحید"
-          - "حدیث و سنت"
-          - "سیرت و تاریخ"
-          - "علماء و ائمہ"
-          - "کتب و تراجم"
-          - "تحقیقی مقالات"
-          - "ردِ باطل فرق و افکار"
-          - "حالاتِ حاضرہ"
-          - "منتخب تحریریں"
 
-      - label: "نمایاں تصویر"
-        name: "image"
-        widget: "image"
+          - عقیدۂ توحید
+          - تاریخِ اسلام
+          - مشاجراتِ صحابہ
+          - فرق و مذاہب
+          - حدیث و آثار
+          - کتبِ اسلامیہ
+          - سیرت النبی ﷺ
+          - سیرتِ صحابہ و تابعین
+          - حالاتِ حاضرہ
+
+      - label: تصویر
+        name: image
+        widget: image
         required: false
 
-      - label: "اشاعت کی تاریخ"
-        name: "date"
-        widget: "datetime"
-        required: true
+      - label: تاریخ
+        name: date
+        widget: datetime
 
-      - label: "منتخب مضمون"
-        name: "featured"
-        widget: "boolean"
+      - label: نمایاں مضمون
+        name: featured
+        widget: boolean
         default: false
         required: false
 
-      - label: "ٹیگز"
-        name: "tags"
-        widget: "list"
+      - label: ٹیگز
+        name: tags
+        widget: list
         required: false
 
-      - label: "مضمون"
-        name: "body"
-        widget: "richtext"
+      - label: مضمون
+        name: body
+        widget: markdown
