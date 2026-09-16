@@ -20,8 +20,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
-
             const issue = context.payload.issue;
             const body = issue.body || '';
 
@@ -31,9 +29,10 @@ jobs:
               return m ? m[1].trim() : '';
             }
 
-            const categoryName = field('موضوع');
-            const content = field('مضمون');
-            const title = issue.title.replace(/^\\[مضمون\\]\\s*/i, '').trim() || 'بلا عنوان';
+            const categoryName = field('📂 کٹیگری منتخب کریں') || field('موضوع');
+            const content = field('📄 مضمون') || field('مضمون');
+            const formTitle = field('📝 مضمون کا عنوان');
+            const title = formTitle || issue.title.replace(/^\\[مضمون\\]\\s*/i, '').trim() || 'بلا عنوان';
 
             const categoryMap = {
               'عقیدۂ توحید': 'tawheed',
@@ -95,7 +94,6 @@ jobs:
               date: time,
               issue: issue.number
             });
-
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             let dataSha;
