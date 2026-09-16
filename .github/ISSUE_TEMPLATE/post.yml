@@ -35,7 +35,25 @@ body:
     id: content
     attributes:
       label: "📄 مضمون"
-      description: "یہاں مکمل مضمون لکھیں۔"
+      description: "یہاں مکمل مضمون لکھیں۔ تصویر شامل کرنے کے لیے اس کا URL Markdown میں درج کریں، مثلاً ![تصویر](IMAGE_URL)۔"
       placeholder: "مکمل مضمون یہاں لکھیں..."
     validations:
       required: true
+
+  - type: textarea
+    id: images
+    attributes:
+      label: "🖼️ تصاویر شامل کریں"
+      description: "ہر تصویر کا براہِ راست URL الگ سطر میں لکھیں۔ اگر تصویر مضمون کے اندر مخصوص جگہ پر چاہیے تو مضمون میں ![تصویر](URL) لکھیں۔"
+      placeholder: "https://example.com/image.jpg"
+    validations:
+      required: false
+
+  - type: textarea
+    id: videos
+    attributes:
+      label: "🎥 ویڈیوز شامل کریں"
+      description: "YouTube ویڈیو کا URL الگ سطر میں لکھیں۔ ویڈیو مضمون کے آخر میں خودکار طور پر شامل ہوگی۔"
+      placeholder: "https://www.youtube.com/watch?v=XXXXXXXXXXX"
+    validations:
+      required: false
