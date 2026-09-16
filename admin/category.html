@@ -1,413 +1,59 @@
-
 <!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>موضوعات | مطالعہ</title>
-  <meta name="description" content="مطالعہ — علم، تحقیق اور اسلامی آثار">
-
-  <link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="../style.css">
   <style>
-    .category-page {
-      padding: 70px 20px;
-      min-height: 60vh;
-    }
-
-    .category-header {
-      max-width: 900px;
-      margin: 0 auto 45px;
-      text-align: center;
-    }
-
-    .category-header .icon {
-      font-size: 48px;
-      margin-bottom: 15px;
-    }
-
-    .category-header h1 {
-      margin: 0 0 15px;
-      font-size: 36px;
-    }
-
-    .category-header p {
-      color: #666;
-      font-size: 18px;
-      line-height: 2;
-    }
-
-    .articles-grid {
-      max-width: 1200px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-    }
-
-    .article-card {
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #e8e8e8;
-      box-shadow: 0 5px 20px rgba(0,0,0,.06);
-      transition: .3s;
-    }
-
-    .article-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,.10);
-    }
-
-    .article-image {
-      height: 190px;
-      background: linear-gradient(135deg,#0c5c46,#173f34);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #d8b35a;
-      font-size: 55px;
-    }
-
-    .article-content {
-      padding: 24px;
-    }
-
-    .article-category {
-      color: #b48a2c;
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .article-content h2 {
-      font-size: 21px;
-      line-height: 1.8;
-      margin: 0 0 12px;
-    }
-
-    .article-content p {
-      color: #666;
-      line-height: 1.9;
-      margin-bottom: 18px;
-    }
-
-    .read-more {
-      display: inline-block;
-      color: #0c5c46;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .read-more:hover {
-      color: #b48a2c;
-    }
-
-    .empty-message {
-      text-align: center;
-      max-width: 700px;
-      margin: 50px auto;
-      padding: 40px;
-      background: #f8f8f5;
-      border-radius: 15px;
-      line-height: 2;
-    }
-
-    @media(max-width:900px) {
-      .articles-grid {
-        grid-template-columns: repeat(2,1fr);
-      }
-    }
-
-    @media(max-width:600px) {
-      .category-page {
-        padding: 45px 15px;
-      }
-
-      .category-header h1 {
-        font-size: 28px;
-      }
-
-      .articles-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    .category-page{padding:65px 20px;min-height:65vh}.category-header{max-width:900px;margin:0 auto 40px;text-align:center}.category-header .icon{font-size:48px;margin-bottom:12px}.category-header h1{margin:0 0 12px;font-size:34px;color:#123c32}.category-header p{color:#66716e;font-size:17px;line-height:2}.articles-grid{max-width:1120px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.article-card{background:#fff;border:1px solid #e3e4de;border-radius:15px;overflow:hidden;box-shadow:0 5px 20px rgba(0,0,0,.05)}.article-image{height:125px;display:grid;place-items:center;background:linear-gradient(135deg,#e9eee9,#f3e7c9);font-size:42px}.article-content{padding:20px}.article-category{color:#a17625;font-size:13px;font-weight:bold}.article-content h2{color:#123c32;font-size:20px;line-height:1.8;margin:5px 0 8px}.article-content p{color:#68736f;font-size:14px;line-height:1.9;margin:0}.read-more{display:inline-block;margin-top:12px;color:#123c32;font-weight:bold;text-decoration:none}.empty-message{text-align:center;max-width:700px;margin:40px auto;padding:35px;background:#fff;border:1px solid #e3e4de;border-radius:15px;line-height:2}.loading{text-align:center;color:#66716e;padding:40px}@media(max-width:900px){.articles-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.category-page{padding:45px 15px}.category-header h1{font-size:28px}.articles-grid{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
-
 <header class="site-header">
-
-  <div class="top-bar">
-    <div class="container">
-      <span>بسم اللہ الرحمن الرحیم</span>
-
-      <div class="top-links">
-        <a href="index.html#about">تعارف</a>
-        <a href="index.html#contact">رابطہ</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-header">
-    <div class="container header-inner">
-
-      <a href="index.html" class="brand">
-        <span class="brand-icon">📚</span>
-
-        <div>
-          <h1>مطالعہ</h1>
-          <p>علم، تحقیق اور اسلامی آثار</p>
-        </div>
-      </a>
-
-      <button class="menu-toggle" aria-label="Menu">☰</button>
-
-      <nav class="main-nav">
-        <a href="index.html">🏠 مرکزی صفحہ</a>
-        <a href="index.html#categories">📚 موضوعات</a>
-        <a href="index.html#latest">📝 تازہ مضامین</a>
-        <a href="index.html#books">📖 کتب</a>
-        <a href="index.html#about">ℹ️ تعارف</a>
-      </nav>
-
-    </div>
-  </div>
-
+  <div class="top-bar"><div class="container"><span>بسم اللہ الرحمن الرحیم</span><div class="top-links"><a href="../index.html#about">تعارف</a><a href="../index.html#contact">رابطہ</a></div></div></div>
+  <div class="main-header"><div class="container header-inner"><a href="../index.html" class="brand"><span class="brand-icon">📚</span><div><h1>مطالعہ</h1><p>علم، تحقیق اور اسلامی آثار</p></div></a><nav class="main-nav"><a href="../index.html">🏠 مرکزی صفحہ</a><a href="../index.html#categories">📚 موضوعات</a><a href="../index.html#latest">📝 تازہ مضامین</a><a href="../index.html#books">📖 کتب</a><a href="../index.html#about">ℹ️ تعارف</a></nav></div></div>
 </header>
-
-
 <main class="category-page">
-
-  <div class="category-header">
-
-    <div class="icon" id="categoryIcon">📚</div>
-
-    <h1 id="categoryTitle">موضوع</h1>
-
-    <p id="categoryDescription">
-      علمی و تحقیقی مواد
-    </p>
-
-  </div>
-
-
+  <div class="category-header"><div class="icon" id="categoryIcon">📚</div><h1 id="categoryTitle">موضوع</h1><p id="categoryDescription">علمی و تحقیقی مواد</p></div>
+  <div id="loading" class="loading">مضامین لوڈ کیے جا رہے ہیں...</div>
   <div class="articles-grid" id="articlesGrid"></div>
-
 </main>
-
-
-<footer class="site-footer">
-
-  <div class="container">
-
-    <div class="footer-content">
-
-      <div>
-        <h3>مطالعہ</h3>
-        <p>
-          علم، تحقیق اور اسلامی آثار کے مطالعے کے لیے ایک علمی و تحقیقی ویب سائٹ۔
-        </p>
-      </div>
-
-      <div>
-        <h3>اہم روابط</h3>
-        <a href="index.html">مرکزی صفحہ</a>
-        <a href="index.html#categories">موضوعات</a>
-        <a href="index.html#about">تعارف</a>
-        <a href="index.html#contact">رابطہ</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      © <span id="year"></span> مطالعہ — جملہ حقوق محفوظ ہیں
-    </div>
-
-  </div>
-
-</footer>
-
-
+<footer class="site-footer"><div class="container"><div class="footer-content"><div><h3>مطالعہ</h3><p>علم، تحقیق اور اسلامی آثار کے مطالعے کے لیے ایک علمی و تحقیقی ویب سائٹ۔</p></div><div><h3>اہم روابط</h3><a href="../index.html">مرکزی صفحہ</a><a href="../index.html#categories">موضوعات</a><a href="../index.html#about">تعارف</a><a href="../index.html#contact">رابطہ</a></div></div><div class="footer-bottom">© <span id="year"></span> مطالعہ — جملہ حقوق محفوظ ہیں</div></div></footer>
 <script>
-
-const categories = {
-
-  tawheed: {
-    title: "عقیدۂ توحید",
-    icon: "☝️",
-    description:
-      "توحید، عقیدہ، ایمان، شرک، بدعت اور کتاب و سنت کی روشنی میں اسلامی عقائد سے متعلق علمی و تحقیقی مضامین۔"
-  },
-
-  history: {
-    title: "تاریخِ اسلام",
-    icon: "🏛️",
-    description:
-      "اسلامی تاریخ کے اہم واقعات، ادوار، شخصیات اور تاریخی روایات کا تحقیقی مطالعہ۔"
-  },
-
-  sahaba: {
-    title: "مشاجراتِ صحابہ",
-    icon: "🕌",
-    description:
-      "صحابہ کرام رضی اللہ عنہم کے باہمی معاملات، تاریخی واقعات اور ان سے متعلق روایات کا علمی مطالعہ۔"
-  },
-
-  sects: {
-    title: "فرق و مذاہب",
-    icon: "📚",
-    description:
-      "مختلف فرق و مذاہب، ان کے عقائد، تاریخی پس منظر اور اہل سنت کے علمی موقف سے متعلق تحقیقی مواد۔"
-  },
-
-  hadith: {
-    title: "حدیث و آثار",
-    icon: "📜",
-    description:
-      "احادیث نبویہ، آثارِ صحابہ و تابعین، اسناد، رواۃ اور حدیثی تحقیق سے متعلق مضامین۔"
-  },
-
-  books: {
-    title: "کتبِ اسلامیہ",
-    icon: "📖",
-    description:
-      "اہم اسلامی کتب، علمی تصانیف، مخطوطات اور اہل علم کی معروف کتابوں کا تعارف اور مطالعہ۔"
-  },
-
-  seerah: {
-    title: "سیرت النبی ﷺ",
-    icon: "🌙",
-    description:
-      "رسول اللہ ﷺ کی مبارک سیرت، شمائل، غزوات اور حیات طیبہ کے مختلف پہلوؤں کا مطالعہ۔"
-  },
-
-  scholars: {
-    title: "سیرتِ صحابہ و تابعین",
-    icon: "👤",
-    description:
-      "صحابہ کرام رضی اللہ عنہم، تابعین اور ائمہ و اہل علم کی زندگیوں اور علمی خدمات کا تعارف۔"
-  },
-
-  current: {
-    title: "حالاتِ حاضرہ",
-    icon: "📰",
-    description:
-      "عصر حاضر کے اہم واقعات اور مسائل پر اسلامی، تاریخی اور علمی زاویے سے مضامین۔"
-  }
-
+const categories={
+ tawheed:{title:'عقیدۂ توحید',icon:'☝️',description:'توحید، عقیدہ، ایمان، شرک، بدعت اور کتاب و سنت کی روشنی میں اسلامی عقائد سے متعلق علمی و تحقیقی مضامین۔'},
+ history:{title:'تاریخِ اسلام',icon:'🏛️',description:'اسلامی تاریخ کے اہم واقعات، ادوار، شخصیات اور تاریخی روایات کا تحقیقی مطالعہ۔'},
+ sahaba:{title:'مشاجراتِ صحابہ',icon:'⚔️',description:'صحابہ کرام رضی اللہ عنہم کے باہمی معاملات، تاریخی واقعات اور ان سے متعلق روایات کا علمی مطالعہ۔'},
+ sects:{title:'فرق و مذاہب',icon:'📚',description:'مختلف فرق و مذاہب، ان کے عقائد، تاریخی پس منظر اور اہل سنت کے علمی موقف سے متعلق تحقیقی مواد۔'},
+ hadith:{title:'حدیث و آثار',icon:'📜',description:'احادیث نبویہ، آثارِ صحابہ و تابعین، اسناد، رواۃ اور حدیثی تحقیق سے متعلق مضامین۔'},
+ books:{title:'کتبِ اسلامیہ',icon:'📖',description:'اہم اسلامی کتب، علمی تصانیف، مخطوطات اور اہل علم کی معروف کتابوں کا تعارف اور مطالعہ۔'},
+ seerah:{title:'سیرت النبی ﷺ',icon:'🌙',description:'رسول اللہ ﷺ کی مبارک سیرت، شمائل، غزوات اور حیات طیبہ کے مختلف پہلوؤں کا مطالعہ۔'},
+ scholars:{title:'سیرتِ صحابہ و تابعین',icon:'👤',description:'صحابہ کرام رضی اللہ عنہم، تابعین اور ائمہ و اہل علم کی زندگیوں اور علمی خدمات کا تعارف۔'},
+ current:{title:'حالاتِ حاضرہ',icon:'📰',description:'عصر حاضر کے اہم واقعات اور مسائل پر اسلامی، تاریخی اور علمی زاویے سے مضامین۔'}
 };
-
-
-const articles = [
-
-  {
-    id: "example-1",
-    category: "tawheed",
-    title: "توحید کی حقیقت اور اس کی اہمیت",
-    excerpt:
-      "توحید اسلام کے بنیادی عقائد میں سے ہے۔ کتاب و سنت کی روشنی میں اس کی حقیقت اور اہمیت کا مختصر مطالعہ۔",
-    icon: "☝️"
-  },
-
-  {
-    id: "example-2",
-    category: "history",
-    title: "اسلامی تاریخ کا ایک اہم واقعہ",
-    excerpt:
-      "اسلامی تاریخ کے اہم واقعات کو معتبر تاریخی مصادر کی روشنی میں سمجھنے کی ایک کوشش۔",
-    icon: "🏛️"
-  },
-
-  {
-    id: "example-3",
-    category: "hadith",
-    title: "حدیث و آثار کی علمی اہمیت",
-    excerpt:
-      "حدیث اور آثار اسلامی علوم کے بنیادی مصادر میں شامل ہیں۔ ان کے فہم کے لیے اصولِ تحقیق کا مختصر جائزہ۔",
-    icon: "📜"
-  }
-
-];
-
-
-const params = new URLSearchParams(window.location.search);
-const categoryKey = params.get("cat") || "tawheed";
-
-const category = categories[categoryKey] || categories.tawheed;
-
-document.title = category.title + " | مطالعہ";
-
-document.getElementById("categoryIcon").textContent = category.icon;
-document.getElementById("categoryTitle").textContent = category.title;
-document.getElementById("categoryDescription").textContent =
-  category.description;
-
-
-const grid = document.getElementById("articlesGrid");
-
-const filteredArticles =
-  articles.filter(article => article.category === categoryKey);
-
-
-if(filteredArticles.length === 0) {
-
-  grid.innerHTML = `
-    <div class="empty-message">
-      <h2>اس موضوع کے مضامین جلد شامل کیے جائیں گے</h2>
-
-      <p>
-        اس شعبے میں علمی و تحقیقی مواد کی تیاری جاری ہے۔
-        ان شاء اللہ جلد مزید مضامین شائع کیے جائیں گے۔
-      </p>
-
-      <a class="read-more" href="index.html">
-        ← مرکزی صفحہ پر واپس جائیں
-      </a>
-    </div>
-  `;
-
-} else {
-
-  grid.innerHTML = filteredArticles.map(article => `
-
-    <article class="article-card">
-
-      <div class="article-image">
-        ${article.icon}
-      </div>
-
-      <div class="article-content">
-
-        <div class="article-category">
-          ${category.title}
-        </div>
-
-        <h2>${article.title}</h2>
-
-        <p>${article.excerpt}</p>
-
-        <a
-          class="read-more"
-          href="article.html?id=${article.id}">
-          مکمل مضمون پڑھیں ←
-        </a>
-
-      </div>
-
-    </article>
-
-  `).join("");
-
+const key=new URLSearchParams(location.search).get('cat')||'tawheed';
+const category=categories[key]||categories.tawheed;
+document.title=category.title+' | مطالعہ';
+document.getElementById('categoryIcon').textContent=category.icon;
+document.getElementById('categoryTitle').textContent=category.title;
+document.getElementById('categoryDescription').textContent=category.description;
+document.getElementById('year').textContent=new Date().getFullYear();
+async function loadPosts(){
+ const loading=document.getElementById('loading'),grid=document.getElementById('articlesGrid');
+ try{
+  const response=await fetch('../data/posts.json?'+Date.now());
+  if(!response.ok) throw new Error('posts index not found');
+  const posts=await response.json();
+  const filtered=posts.filter(p=>p.categoryKey===key);
+  loading.style.display='none';
+  if(!filtered.length){grid.innerHTML='<div class="empty-message"><h2>اس موضوع کے مضامین ابھی موجود نہیں</h2><p>اس شعبے میں مضمون شائع ہونے کے بعد وہ خودکار طور پر یہاں ظاہر ہوگا۔</p><a class="read-more" href="../index.html">← مرکزی صفحہ پر واپس جائیں</a></div>';return;}
+  grid.innerHTML=filtered.map(p=>`<article class="article-card"><div class="article-image">${category.icon}</div><div class="article-content"><div class="article-category">${p.category}</div><h2>${escapeHtml(p.title)}</h2><p>${formatDate(p.date)}</p><a class="read-more" href="../article.html?post=${encodeURIComponent(p.file)}">مکمل مضمون پڑھیں ←</a></div></article>`).join('');
+ }catch(e){loading.innerHTML='<div class="empty-message"><h2>مضامین لوڈ نہیں ہو سکے</h2><p>براہ کرم کچھ دیر بعد دوبارہ کوشش کریں۔</p></div>';console.error(e);}
 }
-
-
-document.getElementById("year").textContent =
-  new Date().getFullYear();
-
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function formatDate(value){if(!value)return '';const d=new Date(value);return isNaN(d)?'':d.toLocaleDateString('ur-PK',{year:'numeric',month:'long',day:'numeric'});}
+loadPosts();
 </script>
-
 </body>
 </html>
