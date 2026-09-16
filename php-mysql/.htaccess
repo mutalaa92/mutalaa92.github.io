@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "^(config\.php|config\.sample\.php|common\.php|database\.sql|migrate_posts\.php)$">
+  Require all denied
+</FilesMatch>
