@@ -34,7 +34,7 @@ jobs:
             const formTitle = field('📝 مضمون کا عنوان');
             const imageUrls = field('🖼️ تصاویر شامل کریں');
             const videoUrls = field('🎥 ویڈیوز شامل کریں');
-            const title = formTitle || issue.title.replace(/^\\[مضمون\\]\\s*/i, '').trim() || 'بلا عنوان';
+            const title = formTitle || issue.title.replace(new RegExp('^\\[مضمون\\]\\s*', 'i'), '').trim() || 'بلا عنوان';
 
             const categoryMap = {
               'عقیدۂ توحید': 'tawheed',
@@ -63,18 +63,19 @@ jobs:
               return;
             }
 
-            const isImage = url => /^https?:\\/\\/.+\\.(?:jpg|jpeg|png|gif|webp|avif)(?:[?#].*)?$/i.test(url);
+            const isImage = url => new RegExp('^https?:\\/\\/.+\\.(?:jpg|jpeg|png|gif|webp|avif)(?:[?#].*)?$', 'i').test(url);
             const imageList = imageUrls
               .split(/\\r?\\n/)
               .map(s => s.trim())
               .filter(Boolean)
               .filter(isImage);
 
+            const isYouTube = url => new RegExp('^https?:\\/\\/(?:www\\.)?(?:youtube\\.com\\/(?:watch\\?v=|shorts\\/)|youtu\\.be\\/)', 'i').test(url);
             const videoList = videoUrls
               .split(/\\r?\\n/)
               .map(s => s.trim())
               .filter(Boolean)
-              .filter(s => /^https?:\\/\\/(?:www\\.)?(?:youtube\\.com\\/(?:watch\\?v=|shorts\\/)|youtu\\.be\\/)/i.test(s));
+              .filter(isYouTube);
 
             let media = '';
 
@@ -101,8 +102,8 @@ jobs:
             const date = time.slice(0, 10);
             const slug = title
               .toLowerCase()
-              .replace(/[^\\p{L}\\p{N}]+/gu, '-')
-              .replace(/^-+|-+$/g, '')
+              .replace(new RegExp('[^\\p{L}\\p{N}]+', 'gu'), '-')
+              .replace(new RegExp('^-+|-+$', 'g'), '')
               .slice(0, 70) || `post-${issue.number}`;
             const filename = `${date}-${slug}-${issue.number}.md`;
             const path = `_posts/${filename}`;
