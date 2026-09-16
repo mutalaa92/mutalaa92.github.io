@@ -22,6 +22,19 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: alignment
+    attributes:
+      label: "🎨 متن کی ترتیب"
+      description: "مضمون کے متن کی ترتیب منتخب کریں۔"
+      options:
+        - "جسٹیفائی"
+        - "دائیں"
+        - "بائیں"
+        - "درمیان"
+    validations:
+      required: true
+
   - type: input
     id: subject
     attributes:
