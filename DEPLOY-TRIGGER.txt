@@ -1,0 +1,3 @@
+GitHub Pages deployment trigger.
+
+Netlify has been removed from the website infrastructure. The production site is served from GitHub Pages.
