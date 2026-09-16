@@ -1,4 +1,5 @@
-GitHub Pages deployment trigger — 2026-09-16
+GitHub Pages deployment trigger.
 
-Site: https://mutalaa92.github.io/
-Publishing source: GitHub Actions / main
+Netlify has been removed from the website infrastructure. The production site is served from GitHub Pages.
+
+Deployment refresh: 2026-09-16T15:30:00+05:00
