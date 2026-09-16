@@ -2,8 +2,8 @@ backend:
   name: git-gateway
   branch: main
 
-site_url: https://mutalaa.netlify.app
-display_url: https://mutalaa.netlify.app
+site_url: "https://mutalaa.netlify.app"
+display_url: "https://mutalaa.netlify.app"
 
 locale: ur
 
