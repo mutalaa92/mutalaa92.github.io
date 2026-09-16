@@ -8,17 +8,29 @@
 
     <title>مطالعہ — انتظامی پینل</title>
 
-    <script
-        src="https://identity.netlify.com/v1/netlify-identity-widget.js"
-        type="text/javascript">
-    </script>
+    <!-- Netlify Identity -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 
 <body>
 
-    <script
-        src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"
-        type="text/javascript">
+    <!-- Decap CMS -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <script>
+        if (window.netlifyIdentity) {
+
+            window.netlifyIdentity.on("init", function(user) {
+
+                if (!user) {
+                    window.netlifyIdentity.on("login", function() {
+                        window.location.href = "/admin/";
+                    });
+                }
+
+            });
+
+        }
     </script>
 
 </body>
