@@ -36,9 +36,10 @@ jobs:
             const aligns = {'جسٹیفائی':'justify','دائیں':'right','بائیں':'left','درمیان':'center'};
             const category = map[categoryName];
             const alignment = aligns[alignmentName] || 'justify';
-            if (!category || !content) throw new Error('کٹیگری یا مضمون کا متن نہیں ملا۔');
+            if (!category || !content || !formTitle) throw new Error('کٹیگری، عنوان یا مضمون کا متن نہیں ملا۔');
             let media = '';
             images.split('\n').map(x=>x.trim()).filter(Boolean).forEach(x=>{ if(x.startsWith('http://')||x.startsWith('https://')) media += '\n\n![تصویر](' + x + ')'; });
+            videos.split('\n').map(x=>x.trim()).filter(Boolean).forEach(x=>{ try { const u=new URL(x); let id=''; if(u.hostname.includes('youtu.be')) id=u.pathname.slice(1); else if(u.pathname.startsWith('/shorts/')) id=u.pathname.split('/')[2]||''; else id=u.searchParams.get('v')||''; if(id) media += '\n\n<div class="video-embed"><iframe src="https://www.youtube.com/embed/' + id + '" title="YouTube video" frameborder="0" allowfullscreen></iframe></div>'; } catch(e) {} });
             const now = new Date().toISOString();
             const date = now.slice(0,10);
             const filename = date + '-article-' + issue.number + '.md';
