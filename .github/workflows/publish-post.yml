@@ -2,8 +2,7 @@ name: Publish Article
 
 on:
   issues:
-    types: [opened]
-  workflow_dispatch:
+    types: [opened, labeled]
 
 permissions:
   contents: write
@@ -41,7 +40,7 @@ jobs:
               'عقیدۂ توحید': 'tawheed',
               'تاریخِ اسلام': 'history',
               'مشاجراتِ صحابہ': 'sahaba',
-              'فرق و مذاہب': 'sects',
+              'فرق و مذاهب': 'sects',
               'حدیث و آثار': 'hadith',
               'کتبِ اسلامیہ': 'books',
               'سیرت النبی ﷺ': 'seerah',
@@ -98,8 +97,8 @@ jobs:
             }
 
             const now = new Date();
-            const date = now.toISOString().slice(0, 10);
             const time = now.toISOString();
+            const date = time.slice(0, 10);
             const slug = title
               .toLowerCase()
               .replace(/[^\\p{L}\\p{N}]+/gu, '-')
@@ -119,6 +118,7 @@ jobs:
             });
 
             let posts = [];
+            let dataSha;
             try {
               const existing = await github.rest.repos.getContent({
                 owner: context.repo.owner,
@@ -126,6 +126,7 @@ jobs:
                 path: 'data/posts.json'
               });
               posts = JSON.parse(Buffer.from(existing.data.content, 'base64').toString('utf8'));
+              dataSha = existing.data.sha;
             } catch (e) {
               if (e.status !== 404) throw e;
             }
@@ -142,18 +143,6 @@ jobs:
             });
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            let dataSha;
-            try {
-              const existing = await github.rest.repos.getContent({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                path: 'data/posts.json'
-              });
-              dataSha = existing.data.sha;
-            } catch (e) {
-              if (e.status !== 404) throw e;
-            }
-
             const dataArgs = {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -164,17 +153,18 @@ jobs:
             if (dataSha) dataArgs.sha = dataSha;
             await github.rest.repos.createOrUpdateFileContents(dataArgs);
 
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              state: 'closed',
-              state_reason: 'completed'
-            });
-
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
               body: `✅ مضمون کامیابی سے شائع کر دیا گیا۔\\n\\nکٹیگری: **${categoryName}**\\n\\nترتیب: **${alignmentName}**\\n\\nفائل: \\`_posts/${filename}\\``
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed',
+              state_reason: 'completed',
+              labels: ['Published']
             });
