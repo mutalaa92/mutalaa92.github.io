@@ -215,6 +215,11 @@ async function loadArticle() {
         /date:\s*["']?(.*?)["']?\s*$|date:\s*(.*)$/m
       );
 
+    const alignmentMatch =
+      frontmatter.match(
+        /alignment:\s*["']?(justify|right|left|center)["']?\s*$/im
+      );
+
     const title =
       titleMatch?.[1] ||
       titleMatch?.[2] ||
@@ -230,6 +235,15 @@ async function loadArticle() {
       dateMatch?.[2] ||
       "";
 
+    const alignment =
+      alignmentMatch?.[1]?.toLowerCase() ||
+      "justify";
+
+    const safeAlignment =
+      ["justify", "right", "left", "center"].includes(alignment)
+        ? alignment
+        : "justify";
+
     document.title =
       title.trim() + " — مطالعہ";
 
@@ -243,9 +257,9 @@ async function loadArticle() {
       category.trim() +
       (date ? "  •  " + date.trim() : "");
 
-    document.getElementById(
-      "articleBody"
-    ).innerHTML = marked.parse(content);
+    const articleBody = document.getElementById("articleBody");
+    articleBody.style.textAlign = safeAlignment;
+    articleBody.innerHTML = marked.parse(content);
 
     loading.style.display = "none";
     article.style.display = "block";
