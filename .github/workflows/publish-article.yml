@@ -1,0 +1,45 @@
+name: Publish Article
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+jobs:
+  publish:
+    if: github.event.issue.user.login == 'mutalaa92' && contains(github.event.issue.labels.*.name, 'publish')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create article
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python3 - <<'PY'
+          import os,re
+          from datetime import datetime
+          title=os.environ['ISSUE_TITLE'].replace('[مضمون]','').strip()
+          body=os.environ.get('ISSUE_BODY') or ''
+          n=os.environ['ISSUE_NUMBER']
+          m=re.search(r'### موضوع\s*\n\s*([^\n]+)',body)
+          category=m.group(1).strip() if m else 'حالاتِ حاضرہ'
+          m=re.search(r'### مضمون\s*\n\s*(.*)',body,re.S)
+          content=m.group(1).strip() if m else body.strip()
+          content=re.sub(r'<!--.*?-->','',content,flags=re.S).strip()
+          date=datetime.now().strftime('%Y-%m-%d')
+          path=f'_posts/{date}-article-{n}.md'
+          os.makedirs('_posts',exist_ok=True)
+          with open(path,'w',encoding='utf-8') as f:
+              f.write(f'---\ntitle: "{title.replace(chr(34),chr(92)+chr(34))}"\ncategory: "{category.replace(chr(34),chr(92)+chr(34))}"\ndate: "{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"\nfeatured: false\n---\n\n'+content+'\n')
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add _posts/
+          git commit -m "Publish article from issue #${{ github.event.issue.number }}"
+          git push
+      - name: Close request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue close ${{ github.event.issue.number }} --repo ${{ github.repository }} --comment 'مضمون کامیابی سے شائع کر دیا گیا ہے۔'

@@ -1,0 +1,29 @@
+name: نیا مضمون
+about: مطالعہ کے لیے نیا مضمون تیار کریں
+title: "[مضمون] "
+labels: ["publish"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: موضوع
+      options:
+        - عقیدۂ توحید
+        - تاریخِ اسلام
+        - مشاجراتِ صحابہ
+        - فرق و مذاہب
+        - حدیث و آثار
+        - کتبِ اسلامیہ
+        - سیرت النبی ﷺ
+        - سیرتِ صحابہ و تابعین
+        - حالاتِ حاضرہ
+    validations:
+      required: true
+  - type: textarea
+    id: content
+    attributes:
+      label: مضمون
+      description: یہاں مکمل مضمون لکھیں۔
+      placeholder: مکمل مضمون یہاں لکھیں...
+    validations:
+      required: true
