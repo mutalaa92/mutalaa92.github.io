@@ -32,6 +32,8 @@ jobs:
             const categoryName = field('📂 کٹیگری منتخب کریں') || field('موضوع');
             const content = field('📄 مضمون') || field('مضمون');
             const formTitle = field('📝 مضمون کا عنوان');
+            const imageUrls = field('🖼️ تصاویر شامل کریں');
+            const videoUrls = field('🎥 ویڈیوز شامل کریں');
             const title = formTitle || issue.title.replace(/^\\[مضمون\\]\\s*/i, '').trim() || 'بلا عنوان';
 
             const categoryMap = {
@@ -52,6 +54,39 @@ jobs:
               return;
             }
 
+            const isImage = url => /^https?:\\/\\/.+\\.(?:jpg|jpeg|png|gif|webp|avif)(?:[?#].*)?$/i.test(url);
+            const imageList = imageUrls
+              .split(/\\r?\\n/)
+              .map(s => s.trim())
+              .filter(Boolean)
+              .filter(isImage);
+
+            const videoList = videoUrls
+              .split(/\\r?\\n/)
+              .map(s => s.trim())
+              .filter(Boolean)
+              .filter(s => /^https?:\\/\\/(?:www\\.)?(?:youtube\\.com\\/(?:watch\\?v=|shorts\\/)|youtu\\.be\\/)/i.test(s));
+
+            let media = '';
+
+            if (imageList.length) {
+              media += '\\n\\n## تصاویر\\n\\n' + imageList.map((url, i) => `![تصویر ${i + 1}](${url})`).join('\\n\\n');
+            }
+
+            if (videoList.length) {
+              const embeds = videoList.map(url => {
+                let id = '';
+                try {
+                  const u = new URL(url);
+                  if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1);
+                  else if (u.pathname.startsWith('/shorts/')) id = u.pathname.split('/')[2];
+                  else id = u.searchParams.get('v') || '';
+                } catch (_) {}
+                return id ? `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>` : '';
+              }).filter(Boolean);
+              if (embeds.length) media += '\\n\\n## ویڈیوز\\n\\n' + embeds.join('\\n\\n');
+            }
+
             const now = new Date();
             const date = now.toISOString().slice(0, 10);
             const time = now.toISOString();
@@ -63,7 +98,7 @@ jobs:
             const filename = `${date}-${slug}-${issue.number}.md`;
             const path = `_posts/${filename}`;
 
-            const markdown = `---\ntitle: "${title.replace(/"/g, '\\"')}"\ncategory: "${categoryName.replace(/"/g, '\\"')}"\ncategory_key: "${category}"\ndate: "${time}"\n---\n\n${content}\n`;
+            const markdown = `---\\ntitle: "${title.replace(/"/g, '\\\"')}"\\ncategory: "${categoryName.replace(/"/g, '\\\"')}"\\ncategory_key: "${category}"\\ndate: "${time}"\\n---\\n\\n${content}${media}\\n`;
 
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
@@ -130,5 +165,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              body: `✅ مضمون کامیابی سے شائع کر دیا گیا۔\n\nکٹیگری: **${categoryName}**\n\nفائل: \\`_posts/${filename}\\``
+              body: `✅ مضمون کامیابی سے شائع کر دیا گیا۔\\n\\nکٹیگری: **${categoryName}**\\n\\nفائل: \\`_posts/${filename}\\``
             });
