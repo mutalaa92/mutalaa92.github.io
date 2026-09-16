@@ -2,4 +2,4 @@ GitHub Pages deployment trigger.
 
 Netlify has been removed from the website infrastructure. The production site is served from GitHub Pages.
 
-Deployment refresh: 2026-09-16T16:00:00+05:00
+Deployment refresh: 2026-09-16T16:15:00+05:00
