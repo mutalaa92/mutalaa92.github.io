@@ -4,30 +4,866 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="robots" content="noindex">
+    <meta name="description" content="علم، تحقیق، تاریخ، حدیث، عقیدہ اور اسلامی کتب کا جامع اردو علمی پلیٹ فارم">
+    <meta name="theme-color" content="#123c32">
 
-    <title>مطالعہ — انتظامی پینل</title>
+    <title>مطالعہ | علم، تحقیق اور اسلامی آثار</title>
 
-    <!-- Netlify Identity -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- Decap CMS -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<!-- =========================
+     HEADER
+========================= -->
 
-    <script>
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", function(user) {
-                if (!user) {
-                    window.netlifyIdentity.on("login", function() {
-                        window.location.href = "/admin/";
-                    });
-                }
-            });
-        }
-    </script>
+<header class="site-header">
+
+    <div class="topbar">
+        <div class="container topbar-inner">
+
+            <div class="topbar-text">
+                بسم اللہ الرحمن الرحیم
+            </div>
+
+            <div class="topbar-links">
+                <a href="#about">تعارف</a>
+                <a href="#contact">رابطہ</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="main-header">
+
+        <div class="container header-inner">
+
+            <a href="index.html" class="brand">
+
+                <div class="brand-icon">
+                    📚
+                </div>
+
+                <div class="brand-text">
+                    <h1>مطالعہ</h1>
+                    <span>علم، تحقیق اور اسلامی آثار</span>
+                </div>
+
+            </a>
+
+
+            <button class="menu-toggle" id="menuToggle" aria-label="مینو کھولیں">
+                ☰
+            </button>
+
+
+            <nav class="main-nav" id="mainNav">
+
+                <a href="index.html" class="active">
+                    🏠 مرکزی صفحہ
+                </a>
+
+                <a href="#categories">
+                    📚 موضوعات
+                </a>
+
+                <a href="#latest">
+                    📝 تازہ مضامین
+                </a>
+
+                <a href="#books">
+                    📖 کتب
+                </a>
+
+                <a href="#about">
+                    ℹ️ تعارف
+                </a>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="hero-pattern"></div>
+
+    <div class="container hero-content">
+
+        <div class="hero-badge">
+            ✦ علمی و تحقیقی ویب سائٹ ✦
+        </div>
+
+        <h2>
+            کتاب و سنت کی روشنی میں
+            <br>
+            <strong>علمی و تحقیقی مطالعہ</strong>
+        </h2>
+
+        <p>
+            عقیدہ، حدیث، تاریخ، سیرت، اسلامی کتب، فرق و مذاہب
+            اور حالاتِ حاضرہ سے متعلق منتخب علمی و تحقیقی مواد
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a href="#categories" class="btn btn-primary">
+                📚 موضوعات دیکھیں
+            </a>
+
+            <a href="#latest" class="btn btn-outline">
+                📝 تازہ مضامین
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SEARCH
+========================= -->
+
+<section class="search-section">
+
+    <div class="container">
+
+        <div class="search-box">
+
+            <span class="search-icon">🔎</span>
+
+            <input
+                type="search"
+                id="siteSearch"
+                placeholder="مضامین، موضوعات یا الفاظ تلاش کریں..."
+                aria-label="ویب سائٹ تلاش کریں"
+            >
+
+            <button id="clearSearch" type="button">
+                ×
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CATEGORIES
+========================= -->
+
+<section class="section categories-section" id="categories">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span class="section-kicker">
+                ✦ علمی موضوعات
+            </span>
+
+            <h2>
+                مطالعہ کے اہم شعبے
+            </h2>
+
+            <p>
+                اپنے مطلوبہ موضوع کا انتخاب کریں اور متعلقہ علمی مواد تک رسائی حاصل کریں۔
+            </p>
+
+        </div>
+
+
+        <div class="category-grid">
+
+
+            <!-- 1 -->
+
+            <a href="category.html?cat=tawheed"
+               class="category-card search-item"
+               data-search="عقیدہ توحید عقیدہ ایمان اللہ">
+
+                <div class="category-icon">
+                    ☝️
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        عقیدۂ توحید
+                    </h3>
+
+                    <p>
+                        توحید، ایمان، عقائد اور بنیادی اسلامی اصولوں سے متعلق علمی مواد۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 2 -->
+
+            <a href="category.html?cat=history"
+               class="category-card search-item"
+               data-search="تاریخ اسلام اسلامی تاریخ خلافت سلاطین">
+
+                <div class="category-icon">
+                    🏛️
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        تاریخِ اسلام
+                    </h3>
+
+                    <p>
+                        اسلامی تاریخ کے اہم ادوار، شخصیات، واقعات اور تاریخی حقائق۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 3 -->
+
+            <a href="category.html?cat=sahaba"
+               class="category-card search-item"
+               data-search="مشاجرات صحابہ صحابہ کرام علی معاویہ فتنہ">
+
+                <div class="category-icon">
+                    ⚔️
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        مشاجراتِ صحابہ
+                    </h3>
+
+                    <p>
+                        صحابۂ کرام رضی اللہ عنہم کے باہمی واقعات اور متعلقہ تاریخی روایات۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 4 -->
+
+            <a href="category.html?cat=sects"
+               class="category-card search-item"
+               data-search="فرق مذاہب فرقے رافضہ خوارج معتزلہ مذاہب">
+
+                <div class="category-icon">
+                    📚
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        فرق و مذاہب
+                    </h3>
+
+                    <p>
+                        مختلف فرق و مذاہب کے عقائد، افکار، تاریخی پس منظر اور علمی نقد۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 5 -->
+
+            <a href="category.html?cat=hadith"
+               class="category-card search-item"
+               data-search="حدیث آثار سنت محدثین روایت">
+
+                <div class="category-icon">
+                    🕋
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        حدیث و آثار
+                    </h3>
+
+                    <p>
+                        احادیث نبویہ ﷺ، آثارِ صحابہ و تابعین اور علمِ حدیث سے متعلق مواد۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 6 -->
+
+            <a href="category.html?cat=books"
+               class="category-card search-item"
+               data-search="کتب اسلامیہ کتابیں مصنفین علماء تحقیق">
+
+                <div class="category-icon">
+                    📖
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        کتبِ اسلامیہ
+                    </h3>
+
+                    <p>
+                        اسلامی کتب، علمی تصانیف، کتابوں کے تعارف اور منتخب اقتباسات۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 7 -->
+
+            <a href="category.html?cat=seerah"
+               class="category-card search-item"
+               data-search="سیرت النبی محمد رسول اللہ رسول اللہ">
+
+                <div class="category-icon">
+                    ﷺ
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        سیرت النبی ﷺ
+                    </h3>
+
+                    <p>
+                        رسول اللہ ﷺ کی مبارک سیرت، شمائل، غزوات اور حیاتِ طیبہ۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 8 -->
+
+            <a href="category.html?cat=scholars"
+               class="category-card search-item"
+               data-search="سیرت صحابہ تابعین علماء ائمہ سلف">
+
+                <div class="category-icon">
+                    👥
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        سیرتِ صحابہ و تابعین
+                    </h3>
+
+                    <p>
+                        صحابۂ کرام رضی اللہ عنہم، تابعین اور ائمہ سلف کے حالات و تذکرے۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+            <!-- 9 -->
+
+            <a href="category.html?cat=current"
+               class="category-card category-featured search-item"
+               data-search="حالات حاضرہ موجودہ حالات دنیا مسلم امت">
+
+                <div class="category-icon">
+                    🌍
+                </div>
+
+                <div class="category-content">
+
+                    <h3>
+                        حالاتِ حاضرہ
+                    </h3>
+
+                    <p>
+                        عصرِ حاضر کے اہم واقعات، اسلامی دنیا اور موجودہ حالات کا جائزہ۔
+                    </p>
+
+                </div>
+
+                <span class="category-arrow">
+                    ←
+                </span>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURED ARTICLE
+========================= -->
+
+<section class="featured-section">
+
+    <div class="container">
+
+        <div class="featured-card">
+
+            <div class="featured-label">
+                ⭐ نمایاں مضمون
+            </div>
+
+            <div class="featured-content">
+
+                <span class="article-category">
+                    تاریخِ اسلام
+                </span>
+
+                <h2>
+                    اسلامی تاریخ کے اہم واقعات کا تحقیقی مطالعہ
+                </h2>
+
+                <p>
+                    یہاں ویب سائٹ کا نمایاں مضمون دکھایا جائے گا۔
+                    بعد میں اسی جگہ آپ کا اصل مضمون، عنوان، خلاصہ
+                    اور متعلقہ تصویر خود شامل کی جا سکتی ہے۔
+                </p>
+
+                <a href="#" class="read-more">
+                    مکمل مضمون پڑھیں
+                    ←
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     LATEST ARTICLES
+========================= -->
+
+<section class="section latest-section" id="latest">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span class="section-kicker">
+                ✦ تازہ مواد
+            </span>
+
+            <h2>
+                تازہ مضامین
+            </h2>
+
+            <p>
+                ویب سائٹ پر شائع ہونے والے تازہ علمی و تحقیقی مضامین۔
+            </p>
+
+        </div>
+
+
+        <div class="articles-grid">
+
+
+            <article class="article-card search-item"
+                     data-search="تاریخ اسلام علمی مضمون">
+
+                <div class="article-image article-image-1">
+                    📜
+                </div>
+
+                <div class="article-body">
+
+                    <span class="article-category">
+                        تاریخِ اسلام
+                    </span>
+
+                    <h3>
+                        اسلامی تاریخ کا ایک اہم واقعہ
+                    </h3>
+
+                    <p>
+                        منتخب تاریخی واقعے کا مختصر تعارف یہاں ظاہر ہوگا۔
+                    </p>
+
+                    <a href="#" class="article-link">
+                        پڑھیں ←
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="article-card search-item"
+                     data-search="حدیث آثار سنت">
+
+                <div class="article-image article-image-2">
+                    📜
+                </div>
+
+                <div class="article-body">
+
+                    <span class="article-category">
+                        حدیث و آثار
+                    </span>
+
+                    <h3>
+                        حدیث و آثار کی روشنی میں ایک اہم مسئلہ
+                    </h3>
+
+                    <p>
+                        حدیثی مواد اور آثار سے متعلق مضمون کا خلاصہ یہاں ہوگا۔
+                    </p>
+
+                    <a href="#" class="article-link">
+                        پڑھیں ←
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="article-card search-item"
+                     data-search="علماء سیرت صحابہ تابعین">
+
+                <div class="article-image article-image-3">
+                    👤
+                </div>
+
+                <div class="article-body">
+
+                    <span class="article-category">
+                        سیرتِ صحابہ و تابعین
+                    </span>
+
+                    <h3>
+                        اکابرِ امت کی علمی و دعوتی خدمات
+                    </h3>
+
+                    <p>
+                        بزرگ علماء اور سلف صالحین کے حالات و خدمات پر مضمون۔
+                    </p>
+
+                    <a href="#" class="article-link">
+                        پڑھیں ←
+                    </a>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     BOOKS
+========================= -->
+
+<section class="books-section" id="books">
+
+    <div class="container">
+
+        <div class="books-box">
+
+            <div class="books-icon">
+                📚
+            </div>
+
+            <div>
+
+                <span class="section-kicker">
+                    ✦ کتب خانہ
+                </span>
+
+                <h2>
+                    کتبِ اسلامیہ
+                </h2>
+
+                <p>
+                    اسلامی کتب، تحقیقی تصانیف اور منتخب علمی مواد کے لیے
+                    خصوصی کتب خانہ۔
+                </p>
+
+            </div>
+
+            <a href="category.html?cat=books" class="btn btn-primary">
+                کتب دیکھیں
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section class="section about-section" id="about">
+
+    <div class="container about-grid">
+
+        <div>
+
+            <span class="section-kicker">
+                ✦ ہمارے بارے میں
+            </span>
+
+            <h2>
+                مطالعہ — علم کی ایک نئی منزل
+            </h2>
+
+            <p>
+                یہ ویب سائٹ اسلامی علوم، تاریخ، حدیث، عقیدہ، سیرت
+                اور تحقیقی مواد کو ایک منظم اور آسان انداز میں پیش کرنے
+                کے لیے تیار کی گئی ہے۔
+            </p>
+
+            <p>
+                مقصد یہ ہے کہ قاری معتبر علمی مواد تک آسانی سے پہنچ سکے
+                اور مختلف موضوعات کو ایک منظم علمی ماحول میں پڑھ سکے۔
+            </p>
+
+        </div>
+
+
+        <div class="about-box">
+
+            <div class="about-item">
+                <strong>📖</strong>
+                <span>علمی مطالعہ</span>
+            </div>
+
+            <div class="about-item">
+                <strong>🔎</strong>
+                <span>تحقیقی مواد</span>
+            </div>
+
+            <div class="about-item">
+                <strong>📚</strong>
+                <span>اسلامی کتب</span>
+            </div>
+
+            <div class="about-item">
+                <strong>🌐</strong>
+                <span>اردو علمی ذخیرہ</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================= -->
+
+<section class="contact-section" id="contact">
+
+    <div class="container">
+
+        <div class="contact-card">
+
+            <div>
+
+                <span class="section-kicker">
+                    ✦ رابطہ
+                </span>
+
+                <h2>
+                    علمی مواد کے لیے رابطہ کریں
+                </h2>
+
+                <p>
+                    ویب سائٹ سے متعلق تجاویز، اصلاحات یا علمی مواد
+                    کے لیے رابطہ کیا جا سکتا ہے۔
+                </p>
+
+            </div>
+
+            <a href="mailto:info@example.com" class="btn btn-light">
+                ✉️ رابطہ کریں
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="site-footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+
+            <div class="footer-brand">
+
+                <h2>
+                    📚 مطالعہ
+                </h2>
+
+                <p>
+                    علم، تحقیق اور اسلامی آثار کا اردو علمی پلیٹ فارم۔
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>
+                    اہم روابط
+                </h3>
+
+                <a href="#categories">
+                    موضوعات
+                </a>
+
+                <a href="#latest">
+                    تازہ مضامین
+                </a>
+
+                <a href="#books">
+                    کتبِ اسلامیہ
+                </a>
+
+                <a href="#about">
+                    تعارف
+                </a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>
+                    موضوعات
+                </h3>
+
+                <a href="category.html?cat=tawheed">
+                    عقیدۂ توحید
+                </a>
+
+                <a href="category.html?cat=hadith">
+                    حدیث و آثار
+                </a>
+
+                <a href="category.html?cat=history">
+                    تاریخِ اسلام
+                </a>
+
+                <a href="category.html?cat=seerah">
+                    سیرت النبی ﷺ
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © <span id="currentYear"></span> مطالعہ — جملہ حقوق محفوظ ہیں۔
+            </p>
+
+            <p>
+                کتاب و سنت کی روشنی میں علم کی خدمت
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
