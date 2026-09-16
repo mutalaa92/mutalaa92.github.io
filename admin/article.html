@@ -1,1 +1,553 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
 
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>مضمون | مطالعہ</title>
+
+  <meta
+    name="description"
+    content="مطالعہ — علم، تحقیق اور اسلامی آثار">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .article-page {
+      max-width: 900px;
+      margin: auto;
+      padding: 70px 20px;
+    }
+
+    .article-header {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .article-icon {
+      font-size: 55px;
+      margin-bottom: 20px;
+    }
+
+    .article-category-label {
+      color: #b48a2c;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .article-header h1 {
+      font-size: 38px;
+      line-height: 1.7;
+      margin: 0 0 15px;
+    }
+
+    .article-date {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .article-body {
+      background: #fff;
+      padding: 45px;
+      border-radius: 18px;
+      border: 1px solid #e8e8e8;
+      box-shadow: 0 5px 25px rgba(0,0,0,.06);
+    }
+
+    .article-body p {
+      font-size: 19px;
+      line-height: 2.3;
+      margin: 0 0 25px;
+    }
+
+    .article-body h2 {
+      color: #0c5c46;
+      font-size: 27px;
+      margin: 40px 0 20px;
+    }
+
+    .article-body h3 {
+      color: #173f34;
+      font-size: 23px;
+      margin: 30px 0 15px;
+    }
+
+    .article-body ul {
+      line-height: 2.3;
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    .article-body blockquote {
+      border-right: 4px solid #b48a2c;
+      margin: 30px 0;
+      padding: 20px 25px;
+      background: #faf8f0;
+      line-height: 2.2;
+      font-size: 18px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 35px;
+      color: #0c5c46;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .not-found {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .not-found h1 {
+      margin-bottom: 20px;
+    }
+
+    @media(max-width:600px) {
+
+      .article-page {
+        padding: 45px 15px;
+      }
+
+      .article-header h1 {
+        font-size: 28px;
+      }
+
+      .article-body {
+        padding: 25px 20px;
+      }
+
+      .article-body p {
+        font-size: 17px;
+        line-height: 2.1;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+  <div class="top-bar">
+
+    <div class="container">
+
+      <span>بسم اللہ الرحمن الرحیم</span>
+
+      <div class="top-links">
+
+        <a href="index.html#about">
+          تعارف
+        </a>
+
+        <a href="index.html#contact">
+          رابطہ
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="main-header">
+
+    <div class="container header-inner">
+
+      <a href="index.html" class="brand">
+
+        <span class="brand-icon">
+          📚
+        </span>
+
+        <div>
+
+          <h1>مطالعہ</h1>
+
+          <p>
+            علم، تحقیق اور اسلامی آثار
+          </p>
+
+        </div>
+
+      </a>
+
+
+      <button
+        class="menu-toggle"
+        aria-label="Menu">
+        ☰
+      </button>
+
+
+      <nav class="main-nav">
+
+        <a href="index.html">
+          🏠 مرکزی صفحہ
+        </a>
+
+        <a href="index.html#categories">
+          📚 موضوعات
+        </a>
+
+        <a href="index.html#latest">
+          📝 تازہ مضامین
+        </a>
+
+        <a href="index.html#books">
+          📖 کتب
+        </a>
+
+        <a href="index.html#about">
+          ℹ️ تعارف
+        </a>
+
+      </nav>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<main id="articleContainer"
+      class="article-page">
+
+</main>
+
+
+
+<footer class="site-footer">
+
+  <div class="container">
+
+    <div class="footer-content">
+
+      <div>
+
+        <h3>مطالعہ</h3>
+
+        <p>
+          علم، تحقیق اور اسلامی آثار کے مطالعے کے لیے
+          ایک علمی و تحقیقی ویب سائٹ۔
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <h3>اہم روابط</h3>
+
+        <a href="index.html">
+          مرکزی صفحہ
+        </a>
+
+        <a href="index.html#categories">
+          موضوعات
+        </a>
+
+        <a href="index.html#about">
+          تعارف
+        </a>
+
+        <a href="index.html#contact">
+          رابطہ
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+      ©
+      <span id="year"></span>
+      مطالعہ — جملہ حقوق محفوظ ہیں
+
+    </div>
+
+  </div>
+
+</footer>
+
+
+
+<script>
+
+
+const categories = {
+
+  tawheed: "عقیدۂ توحید",
+
+  history: "تاریخِ اسلام",
+
+  sahaba: "مشاجراتِ صحابہ",
+
+  sects: "فرق و مذاہب",
+
+  hadith: "حدیث و آثار",
+
+  books: "کتبِ اسلامیہ",
+
+  seerah: "سیرت النبی ﷺ",
+
+  scholars: "سیرتِ صحابہ و تابعین",
+
+  current: "حالاتِ حاضرہ"
+
+};
+
+
+
+const articles = {
+
+  "example-1": {
+
+    category: "tawheed",
+
+    icon: "☝️",
+
+    title: "توحید کی حقیقت اور اس کی اہمیت",
+
+    date: "16 ستمبر 2026",
+
+    content: `
+
+      <p>
+        توحید اسلام کے بنیادی عقائد میں سے ہے اور تمام انبیائے کرام
+        علیہم السلام کی دعوت کا مرکزی موضوع رہی ہے۔
+      </p>
+
+      <h2>
+        توحید کا مفہوم
+      </h2>
+
+      <p>
+        توحید سے مراد اللہ تعالیٰ کو اس کی ذات، صفات، عبادت اور
+        اس کے حقوق میں یکتا ماننا ہے۔ مسلمان کے ایمان کی بنیاد
+        اللہ تعالیٰ کی وحدانیت پر قائم ہے۔
+      </p>
+
+      <h2>
+        توحید کی اہمیت
+      </h2>
+
+      <p>
+        قرآن مجید میں متعدد مقامات پر اللہ تعالیٰ نے اپنی عبادت
+        اور اپنی وحدانیت کی طرف دعوت دی ہے۔ انبیائے کرام علیہم
+        السلام نے اپنی اقوام کو سب سے پہلے توحید ہی کی دعوت دی۔
+      </p>
+
+      <blockquote>
+        اللہ تعالیٰ ہی عبادت کے لائق ہے، اس کے سوا کوئی معبودِ برحق نہیں۔
+      </blockquote>
+
+      <p>
+        اس لیے ایک مسلمان کے لیے ضروری ہے کہ وہ قرآن و سنت کی
+        روشنی میں توحید کو سمجھے اور اپنے عقیدے کو صحیح بنیادوں
+        پر قائم کرے۔
+      </p>
+
+    `
+
+  },
+
+
+  "example-2": {
+
+    category: "history",
+
+    icon: "🏛️",
+
+    title: "اسلامی تاریخ کا ایک اہم واقعہ",
+
+    date: "16 ستمبر 2026",
+
+    content: `
+
+      <p>
+        اسلامی تاریخ واقعات، شخصیات اور علمی و تہذیبی خدمات سے
+        بھرپور ایک عظیم علمی سرمایہ ہے۔
+      </p>
+
+      <h2>
+        تاریخی واقعات کا مطالعہ
+      </h2>
+
+      <p>
+        تاریخی روایات کے مطالعے میں مصادر کی تحقیق، اسناد کا
+        جائزہ اور مختلف روایات کا تقابل انتہائی اہمیت رکھتا ہے۔
+      </p>
+
+      <p>
+        اسی اصول کے تحت اسلامی تاریخ کے واقعات کو معتبر مصادر
+        کی روشنی میں سمجھنے کی ضرورت ہے۔
+      </p>
+
+    `
+
+  },
+
+
+  "example-3": {
+
+    category: "hadith",
+
+    icon: "📜",
+
+    title: "حدیث و آثار کی علمی اہمیت",
+
+    date: "16 ستمبر 2026",
+
+    content: `
+
+      <p>
+        حدیث رسول اللہ ﷺ اسلامی شریعت کے بنیادی مصادر میں سے ہے،
+        جبکہ صحابہ و تابعین کے آثار بھی اسلامی علوم میں اہم مقام رکھتے ہیں۔
+      </p>
+
+      <h2>
+        حدیث کی تحقیق
+      </h2>
+
+      <p>
+        محدثین کرام نے حدیث کی حفاظت کے لیے اسناد، رواۃ، جرح و تعدیل
+        اور متن کی تحقیق کے نہایت دقیق اصول وضع کیے۔
+      </p>
+
+      <p>
+        احادیث اور آثار کے مطالعے میں اصل مصادر کی طرف رجوع کرنا
+        علمی تحقیق کا بنیادی تقاضا ہے۔
+      </p>
+
+    `
+
+  }
+
+};
+
+
+
+const params =
+  new URLSearchParams(window.location.search);
+
+const articleId =
+  params.get("id");
+
+
+const article =
+  articles[articleId];
+
+
+const container =
+  document.getElementById("articleContainer");
+
+
+if(!article) {
+
+  container.innerHTML = `
+
+    <div class="not-found">
+
+      <div class="article-icon">
+        📚
+      </div>
+
+      <h1>
+        مضمون دستیاب نہیں
+      </h1>
+
+      <p>
+        مطلوبہ مضمون موجود نہیں یا اسے منتقل کر دیا گیا ہے۔
+      </p>
+
+      <a
+        class="back-link"
+        href="index.html">
+        ← مرکزی صفحہ پر واپس جائیں
+      </a>
+
+    </div>
+
+  `;
+
+} else {
+
+
+  const categoryName =
+    categories[article.category] ||
+    "علمی مضمون";
+
+
+  document.title =
+    article.title + " | مطالعہ";
+
+
+  container.innerHTML = `
+
+    <header class="article-header">
+
+      <div class="article-icon">
+        ${article.icon}
+      </div>
+
+      <div class="article-category-label">
+        ${categoryName}
+      </div>
+
+      <h1>
+        ${article.title}
+      </h1>
+
+      <div class="article-date">
+        ${article.date}
+      </div>
+
+    </header>
+
+
+    <article class="article-body">
+
+      ${article.content}
+
+    </article>
+
+
+    <a
+      class="back-link"
+      href="category.html?cat=${article.category}">
+      ← ${categoryName} کے مزید مضامین
+    </a>
+
+  `;
+
+}
+
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+
+</script>
+
+
+</body>
+
+</html>
