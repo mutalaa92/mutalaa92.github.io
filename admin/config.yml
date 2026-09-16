@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: mutalaa92/mutalaa92.github.io
+  name: git-gateway
   branch: main
 
 site_url: https://mutalaa.netlify.app
