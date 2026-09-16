@@ -30,6 +30,7 @@ jobs:
             }
 
             const categoryName = field('📂 کٹیگری منتخب کریں') || field('موضوع');
+            const alignmentName = field('🎨 متن کی ترتیب') || 'جسٹیفائی';
             const content = field('📄 مضمون') || field('مضمون');
             const formTitle = field('📝 مضمون کا عنوان');
             const imageUrls = field('🖼️ تصاویر شامل کریں');
@@ -48,7 +49,16 @@ jobs:
               'حالاتِ حاضرہ': 'current'
             };
 
+            const alignmentMap = {
+              'جسٹیفائی': 'justify',
+              'دائیں': 'right',
+              'بائیں': 'left',
+              'درمیان': 'center'
+            };
+
             const category = categoryMap[categoryName];
+            const alignment = alignmentMap[alignmentName] || 'justify';
+
             if (!category || !content) {
               core.setFailed('کٹیگری یا مضمون کا متن موجود نہیں۔');
               return;
@@ -98,7 +108,7 @@ jobs:
             const filename = `${date}-${slug}-${issue.number}.md`;
             const path = `_posts/${filename}`;
 
-            const markdown = `---\\ntitle: "${title.replace(/"/g, '\\\"')}"\\ncategory: "${categoryName.replace(/"/g, '\\\"')}"\\ncategory_key: "${category}"\\ndate: "${time}"\\n---\\n\\n${content}${media}\\n`;
+            const markdown = `---\\ntitle: "${title.replace(/"/g, '\\\"')}"\\ncategory: "${categoryName.replace(/"/g, '\\\"')}"\\ncategory_key: "${category}"\\nalignment: "${alignment}"\\ndate: "${time}"\\n---\\n\\n${content}${media}\\n`;
 
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
@@ -126,6 +136,7 @@ jobs:
               title,
               category: categoryName,
               categoryKey: category,
+              alignment,
               date: time,
               issue: issue.number
             });
@@ -165,5 +176,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              body: `✅ مضمون کامیابی سے شائع کر دیا گیا۔\\n\\nکٹیگری: **${categoryName}**\\n\\nفائل: \\`_posts/${filename}\\``
+              body: `✅ مضمون کامیابی سے شائع کر دیا گیا۔\\n\\nکٹیگری: **${categoryName}**\\n\\nترتیب: **${alignmentName}**\\n\\nفائل: \\`_posts/${filename}\\``
             });
