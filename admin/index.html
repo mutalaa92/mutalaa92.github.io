@@ -22,11 +22,6 @@
 
             window.netlifyIdentity.on("init", function(user) {
 
-                /*
-                 * Password recovery / confirmation / invite
-                 * token کو Netlify Identity خود process کرے گا۔
-                 */
-
                 if (!user) {
                     window.netlifyIdentity.on("login", function() {
                         window.location.href = "/admin/";
