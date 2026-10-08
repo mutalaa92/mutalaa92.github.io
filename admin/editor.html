@@ -86,7 +86,7 @@ function loadDraft(){
  }catch(e){}
 }
 function clearDraft(){if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload()}}
-function publish(){
+async function publish(){
  const title=val('title').trim(),content=val('content').trim();
  if(!title||!content){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
  const body=[
@@ -97,8 +97,10 @@ function publish(){
  '### 🖼️ تصاویر شامل کریں','',val('images').trim(),'',
  '### 🎥 ویڈیوز شامل کریں','',val('videos').trim()
  ].join('\n');
- const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent('[مضمون] '+title)+'&body='+encodeURIComponent(body)+'&labels='+encodeURIComponent('publish');
+ await navigator.clipboard.writeText(body);
+ const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent('[مضمون] '+title);
  window.open(url,'_blank');
+ alert('مضمون کا مکمل متن کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub میں نیا Issue کھلنے کے بعد Ctrl+V سے متن پیسٹ کر دیں، پھر مضمون شائع کریں۔');
 }
 loadDraft();
 </script>
