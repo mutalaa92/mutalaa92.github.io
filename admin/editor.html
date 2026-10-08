@@ -120,18 +120,29 @@ function saveSelection(){
  if(editor().contains(r.commonAncestorContainer)) savedRange=r.cloneRange();
 }
 document.addEventListener('selectionchange',saveSelection);
+document.addEventListener('mousedown',e=>{if(e.target.closest('.toolbar,.emoji-panel'))saveSelection()});
 function restoreSelection(){
  const el=editor();el.focus();
  if(savedRange){
-   const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);
+  try{
+   if(el.contains(savedRange.commonAncestorContainer)){
+    const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);return true;
+   }
+  }catch(e){savedRange=null;}
  }
+ return false;
 }
 function formatText(command){restoreSelection();document.execCommand(command,false,null);saveSelection()}
 function applyFont(font){restoreSelection();document.execCommand('fontName',false,font);saveSelection()}
 function applyColor(color){restoreSelection();document.execCommand('foreColor',false,color);saveSelection()}
 function applyAlign(align){restoreSelection();const m={justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'};document.execCommand(m[align]||'justifyFull',false,null);saveSelection()}
 function changeFontSize(step){restoreSelection();document.execCommand('fontSize',false,step>0?'5':'2');saveSelection()}
-function insertText(value){restoreSelection();document.execCommand('insertText',false,value);saveSelection()}
+function insertText(value){
+ restoreSelection();
+ const ok=document.execCommand('insertText',false,value);
+ if(!ok){const sel=window.getSelection();if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);r.deleteContents();r.insertNode(document.createTextNode(value));r.collapse(false);sel.removeAllRanges();sel.addRange(r)}}
+ saveSelection()
+}
 function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden}
 function saveDraft(){const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:editor().innerHTML,images:val('images'),videos:val('videos')};localStorage.setItem(key,JSON.stringify(d));alert('مسودہ محفوظ ہوگیا۔')}
 function loadDraft(){try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});if(d.content!==undefined)editor().innerHTML=d.content}catch(e){}}
@@ -181,6 +192,8 @@ async function loadExistingPost(encoded){
    .replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'')
    .trim();
   editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
+  savedRange=null;
+  editor().focus();
   window.scrollTo({top:0,behavior:'smooth'});
   alert('مضمون ایڈیٹر میں کھل گیا ہے۔ ترمیم کے بعد "GitHub پر مضمون بھیجیں" دبائیں۔');
  }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔');}
