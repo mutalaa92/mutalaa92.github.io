@@ -200,29 +200,4 @@ async function publish(){
 loadDraft();
 </script>
 </body>
-</html>,'m'));return x?x[1]:''};
-  document.getElementById('title').value=meta('title');
-  if(meta('category'))document.getElementById('category').value=meta('category');
-  const am={justify:'جسٹیفائی',right:'دائیں',left:'بائیں',center:'درمیان'};
-  if(am[meta('alignment')])document.getElementById('alignment').value=am[meta('alignment')];
-  const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);
-  document.getElementById('images').value=[...new Set(imgs)].join('\n');
-  const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);
-  document.getElementById('videos').value=[...new Set(vids)].join('\n');
-  const clean=body.replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'').replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'').trim();
-  editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
-  window.scrollTo({top:0,behavior:'smooth'});
- }catch(e){alert('مضمون لوڈ نہیں ہو سکا۔');}
-}
-async function publish(){
- const title=val('title').trim(),html=editor().innerHTML.trim();
- if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
- const body=['### 📂 کٹیگری منتخب کریں','',val('category'),'','### 🎨 متن کی ترتیب','',val('alignment'),'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',val('images').trim(),'','### 🎥 ویڈیوز شامل کریں','',val('videos').trim()].join('\n');
- try{await navigator.clipboard.writeText(body)}catch(e){const ta=document.createElement('textarea');ta.value=body;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
- const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent('[مضمون] '+title);
- window.open(url,'_blank');alert('فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں، پھر مضمون شائع کریں۔');
-}
-loadDraft();
-</script>
-</body>
 </html>
