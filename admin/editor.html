@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>نیا مضمون — مطالعہ</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6f2;color:#25332f;font-family:Tahoma,"Noto Nastaliq Urdu",sans-serif;line-height:2}
+.page{width:min(900px,calc(100% - 30px));margin:35px auto 60px}
+.card{background:#fff;border:1px solid #e1e5df;border-radius:16px;padding:28px;box-shadow:0 5px 24px rgba(0,0,0,.05)}
+h1{margin:0 0 8px;color:#123c32;font-size:30px}
+.note{color:#68736f;margin:0 0 25px;font-size:14px}
+.field{margin:0 0 20px}
+label{display:block;font-weight:bold;color:#123c32;margin-bottom:7px}
+select,input,textarea{display:block;width:100%;max-width:850px;margin:0 auto;border:1px solid #cfd6d0;border-radius:9px;background:#fff;padding:11px 13px;font:inherit;font-size:16px;line-height:1.9;outline:none}
+input,select{height:48px}
+textarea{min-height:520px;resize:vertical;text-align:right;direction:rtl}
+textarea.small{min-height:130px}
+input:focus,select:focus,textarea:focus{border-color:#527d70;box-shadow:0 0 0 3px rgba(82,125,112,.12)}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
+button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bold;cursor:pointer}
+.primary{background:#123c32;color:#fff}.secondary{background:#e9eee9;color:#123c32}
+.help{font-size:13px;color:#68736f;margin-top:5px}
+@media(max-width:600px){.page{width:calc(100% - 20px);margin:20px auto 40px}.card{padding:18px}h1{font-size:25px}textarea{min-height:420px}}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="card">
+<h1>✍️ نیا مضمون</h1>
+<p class="note">یہاں مضمون لکھیں۔ Text Area کو محدود اور مرکزی چوڑائی میں رکھا گیا ہے تاکہ طویل تحریر پڑھنے اور لکھنے میں آسانی رہے۔</p>
+
+<div class="field">
+<label for="category">📂 کٹیگری</label>
+<select id="category">
+<option>عقیدۂ توحید</option><option>تاریخِ اسلام</option><option>مشاجراتِ صحابہ</option><option>فرق و مذاهب</option><option>حدیث و آثار</option><option>کتبِ اسلامیہ</option><option>سیرت النبی ﷺ</option><option>سیرتِ صحابہ و تابعین</option><option>حالاتِ حاضرہ</option>
+</select>
+</div>
+
+<div class="field">
+<label for="alignment">🎨 متن کی ترتیب</label>
+<select id="alignment"><option>جسٹیفائی</option><option>دائیں</option><option>بائیں</option><option>درمیان</option></select>
+</div>
+
+<div class="field">
+<label for="title">📝 مضمون کا عنوان</label>
+<input id="title" type="text" placeholder="مضمون کا عنوان یہاں لکھیں">
+</div>
+
+<div class="field">
+<label for="content">📄 مضمون</label>
+<textarea id="content" placeholder="مکمل مضمون یہاں لکھیں..."></textarea>
+</div>
+
+<div class="field">
+<label for="images">🖼️ تصاویر</label>
+<textarea id="images" class="small" placeholder="ہر تصویر کا براہِ راست URL الگ سطر میں لکھیں"></textarea>
+<p class="help">اگر تصویر مضمون کے اندر مخصوص جگہ پر چاہیے تو مضمون میں ![تصویر](URL) بھی لکھ سکتے ہیں۔</p>
+</div>
+
+<div class="field">
+<label for="videos">🎥 ویڈیوز</label>
+<textarea id="videos" class="small" placeholder="ہر YouTube URL الگ سطر میں لکھیں"></textarea>
+</div>
+
+<div class="actions">
+<button class="primary" onclick="publish()">🚀 GitHub پر مضمون بھیجیں</button>
+<button class="secondary" onclick="saveDraft()">💾 مسودہ محفوظ کریں</button>
+<button class="secondary" onclick="clearDraft()">🗑️ مسودہ صاف کریں</button>
+</div>
+</div>
+</main>
+
+<script>
+const key='mutalaa_article_draft';
+function val(id){return document.getElementById(id).value}
+function saveDraft(){
+ const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
+ localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
+}
+function loadDraft(){
+ try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;
+ ['category','alignment','title','content','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});
+ }catch(e){}
+}
+function clearDraft(){if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload()}}
+function publish(){
+ const title=val('title').trim(),content=val('content').trim();
+ if(!title||!content){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
+ const body=[
+ '### 📂 کٹیگری منتخب کریں','',val('category'),'',
+ '### 🎨 متن کی ترتیب','',val('alignment'),'',
+ '### 📝 مضمون کا عنوان','',title,'',
+ '### 📄 مضمون','',content,'',
+ '### 🖼️ تصاویر شامل کریں','',val('images').trim(),'',
+ '### 🎥 ویڈیوز شامل کریں','',val('videos').trim()
+ ].join('\n');
+ const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent('[مضمون] '+title)+'&body='+encodeURIComponent(body)+'&labels='+encodeURIComponent('publish');
+ window.open(url,'_blank');
+}
+loadDraft();
+</script>
+</body>
+</html>
