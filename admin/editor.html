@@ -7,7 +7,8 @@
 <title>نیا مضمون — مطالعہ</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f5f6f2;color:#25332f;font-family:Tahoma,"Noto Nastaliq Urdu",sans-serif;line-height:2}
+@import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap");
+body{margin:0;background:#f5f6f2;color:#25332f;font-family:"Noto Naskh Arabic",Tahoma,sans-serif;line-height:2}
 .page{width:min(900px,calc(100% - 30px));margin:35px auto 60px}
 .card{background:#fff;border:1px solid #e1e5df;border-radius:16px;padding:28px;box-shadow:0 5px 24px rgba(0,0,0,.05)}
 h1{margin:0 0 8px;color:#123c32;font-size:30px}
@@ -16,7 +17,7 @@ h1{margin:0 0 8px;color:#123c32;font-size:30px}
 label{display:block;font-weight:bold;color:#123c32;margin-bottom:7px}
 select,input,textarea{display:block;width:100%;max-width:850px;margin:0 auto;border:1px solid #cfd6d0;border-radius:9px;background:#fff;padding:11px 13px;font:inherit;font-size:16px;line-height:1.9;outline:none}
 input,select{height:48px}
-textarea{min-height:520px;resize:vertical;text-align:right;direction:rtl}
+textarea{min-height:520px;resize:vertical;text-align:right;direction:rtl;font-family:"Noto Naskh Arabic",Tahoma,sans-serif;font-size:19px;line-height:2.15}
 textarea.small{min-height:130px}
 input:focus,select:focus,textarea:focus{border-color:#527d70;box-shadow:0 0 0 3px rgba(82,125,112,.12)}
 .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
@@ -50,7 +51,7 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 
 <div class="field">
-<label for="content">📄 مضمون</label>
+<label for="content">📄 مضمون</label>\n<div style="display:flex;gap:8px;justify-content:flex-start;margin-bottom:8px;direction:ltr"><button type="button" class="secondary" onclick="changeFontSize(-1)">A−</button><button type="button" class="secondary" onclick="changeFontSize(1)">A+</button></div>
 <textarea id="content" placeholder="مکمل مضمون یہاں لکھیں..."></textarea>
 </div>
 
@@ -75,7 +76,7 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <script>
 const key='mutalaa_article_draft';
-function val(id){return document.getElementById(id).value}
+function val(id){return document.getElementById(id).value}\nfunction changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
 function saveDraft(){
  const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
  localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
