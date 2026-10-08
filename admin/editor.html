@@ -23,6 +23,9 @@ input:focus,select:focus,textarea:focus{border-color:#527d70;box-shadow:0 0 0 3p
 .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
 button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bold;cursor:pointer}
 .primary{background:#123c32;color:#fff}.secondary{background:#e9eee9;color:#123c32}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin:0 0 10px;direction:ltr}
+.toolbar select,.toolbar button{width:auto;max-width:none;height:42px;padding:6px 12px;font-size:14px}
+.toolbar select{font-family:"Noto Naskh Arabic",Tahoma,sans-serif}
 .help{font-size:13px;color:#68736f;margin-top:5px}
 @media(max-width:600px){.page{width:calc(100% - 20px);margin:20px auto 40px}.card{padding:18px}h1{font-size:25px}textarea{min-height:420px}}
 </style>
@@ -77,6 +80,8 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 <script>
 const key='mutalaa_article_draft';
 function val(id){return document.getElementById(id).value}\nfunction changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
+function changeFont(font){document.getElementById('content').style.fontFamily=font;}
+function changeAlign(align){document.getElementById('content').style.textAlign=align;}
 function saveDraft(){
  const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
  localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
