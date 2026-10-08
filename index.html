@@ -51,13 +51,27 @@ function formatDate(value){if(!value)return '';const d=new Date(value);return is
 const categoryIcons={tawheed:'☝️',history:'🏛️',sahaba:'⚔️',sects:'📚',hadith:'🕋',books:'📖',seerah:'ﷺ',scholars:'👥',current:'🌍'};
 async function loadLatestPosts(){
  const box=document.getElementById('latestPosts');
- try{
-  const response=await fetch('data/posts.json?'+Date.now());
-  if(!response.ok) throw new Error('posts index not found');
-  const posts=await response.json();
+ const render=posts=>{
+  posts=Array.isArray(posts)?posts.filter(p=>p&&p.file&&p.title):[];
+  posts.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
   if(!posts.length){box.innerHTML='<div class="no-results" style="display:block">ابھی کوئی مضمون شائع نہیں ہوا۔</div>';return;}
   box.innerHTML=posts.slice(0,6).map(p=>'<article class="article-card"><div class="article-image">'+(categoryIcons[p.categoryKey]||'📚')+'</div><div class="article-body"><span class="article-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.title)+'</h3><p>'+formatDate(p.date)+'</p><a href="article.html?post='+encodeURIComponent(p.file)+'" class="article-link">مکمل مضمون پڑھیں ←</a></div></article>').join('');
- }catch(e){box.innerHTML='<div class="no-results" style="display:block">تازہ مضامین لوڈ نہیں ہو سکے۔</div>';console.error(e);}
+ };
+ try{
+  const response=await fetch('data/posts.json?v='+Date.now(),{cache:'no-store'});
+  if(!response.ok) throw new Error('posts index not found');
+  render(await response.json());
+ }catch(e){
+  console.error(e);
+  try{
+   const fallback=await fetch('https://raw.githubusercontent.com/mutalaa92/mutalaa92.github.io/main/data/posts.json?v='+Date.now(),{cache:'no-store'});
+   if(!fallback.ok) throw new Error('fallback posts index not found');
+   render(await fallback.json());
+  }catch(e2){
+   console.error(e2);
+   box.innerHTML='<div class="no-results" style="display:block">تازہ مضامین لوڈ نہیں ہو سکے۔</div>';
+  }
+ }
 }
 loadLatestPosts();
 document.getElementById('currentYear').textContent=new Date().getFullYear();
