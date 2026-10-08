@@ -147,7 +147,7 @@ async function loadExistingPosts(){
  actions.parentNode.insertBefore(wrap,actions);
  const select=wrap.querySelector('#existingPosts');
  try{
-  const r=await fetch('data/posts.json?v='+Date.now(),{cache:'no-store'});
+  const r=await fetch('../data/posts.json?v='+Date.now(),{cache:'no-store'});
   if(!r.ok) throw new Error('posts index not found');
   const posts=await r.json();
   select.innerHTML='<option value="">— مضمون منتخب کریں —</option>'+posts.map(p=>'<option value="'+encodeURIComponent(p.file)+'">'+escapeHtml(p.title)+'</option>').join('');
