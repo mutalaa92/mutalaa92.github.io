@@ -9,6 +9,34 @@ permissions:
   issues: write
 
 jobs:
+  edit:
+    if: startsWith(github.event.issue.title, '[ترمیم] ')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue=context.payload.issue, body=issue.body||'';
+            const get=n=>{const m='### '+n,a=body.indexOf(m);if(a<0)return '';const s=body.slice(a+m.length),b=s.indexOf('\n### ');return(b<0?s:s.slice(0,b)).trim();};
+            const category=get('📂 کٹیگری منتخب کریں'), alignment=get('🎨 متن کی ترتیب')||'جسٹیفائی', title=get('📝 مضمون کا عنوان'), content=get('📄 مضمون'), file=get('🆔 موجودہ فائل');
+            const map={'عقیدۂ توحید':'tawheed','تاریخِ اسلام':'history','مشاجراتِ صحابہ':'sahaba','فرق و مذاهب':'sects','حدیث و آثار':'hadith','کتبِ اسلامیہ':'books','سیرت النبی ﷺ':'seerah','سیرتِ صحابہ و تابعین':'scholars','حالاتِ حاضرہ':'current'};
+            const amap={'جسٹیفائی':'justify','دائیں':'right','بائیں':'left','درمیان':'center'};
+            if(!file||!title||!content||!map[category])throw new Error('ترمیم کے لیے ضروری ڈیٹا موجود نہیں۔');
+            const ix=await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:'data/posts.json'});
+            const posts=JSON.parse(Buffer.from(ix.data.content,'base64').toString('utf8'));
+            const old=posts.find(p=>p.file===file);if(!old)throw new Error('اصل مضمون index میں موجود نہیں۔');
+            const images=get('🖼️ تصاویر شامل کریں'), videos=get('🎥 ویڈیوز شامل کریں');
+            let media='';
+            images.split('\n').map(x=>x.trim()).filter(Boolean).forEach(x=>{if(/^https?:\/\//i.test(x))media+='\n\n![تصویر]('+x+')';});
+            videos.split('\n').map(x=>x.trim()).filter(Boolean).forEach(x=>{try{const u=new URL(x);let id=u.searchParams.get('v')||'';if(!id&&u.hostname.includes('youtu.be'))id=u.pathname.slice(1);if(!id&&u.pathname.startsWith('/shorts/'))id=u.pathname.split('/')[2]||'';if(id)media+='\n\n<div class="video-embed"><iframe src="https://www.youtube.com/embed/'+id+'" title="YouTube video" frameborder="0" allowfullscreen></iframe></div>';}catch(e){}});
+            const md='---\ntitle: "'+title.replaceAll('"','\\"')+'"\ncategory: "'+category.replaceAll('"','\\"')+'"\ncategory_key: "'+map[category]+'"\nalignment: "'+(amap[alignment]||'justify')+'"\ndate: "'+old.date+'"\n---\n\n'+content+media+'\n';
+            const current=await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:'_posts/'+file});
+            await github.rest.repos.createOrUpdateFileContents({owner:context.repo.owner,repo:context.repo.repo,path:'_posts/'+file,message:'Edit article: '+title,content:Buffer.from(md,'utf8').toString('base64'),sha:current.data.sha});
+            const updated=posts.map(p=>p.file===file?{...p,title,category,categoryKey:map[category],alignment:amap[alignment]||'justify',date:old.date}:p);
+            await github.rest.repos.createOrUpdateFileContents({owner:context.repo.owner,repo:context.repo.repo,path:'data/posts.json',message:'Update edited article index: '+title,content:Buffer.from(JSON.stringify(updated,null,2)+'\n','utf8').toString('base64'),sha:ix.data.sha});
+            await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:issue.number,state:'closed',state_reason:'completed',labels:['Edited']});
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:issue.number,body:'✅ مضمون میں ترمیم محفوظ ہوگئی۔ فائل: `'+file+'`'});
   publish:
     if: contains(github.event.issue.labels.*.name, 'publish')
     runs-on: ubuntu-latest
