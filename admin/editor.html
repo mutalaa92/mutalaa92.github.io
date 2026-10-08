@@ -7,7 +7,7 @@
 <title>نیا مضمون — مطالعہ</title>
 <style>
 *{box-sizing:border-box}
-@import url("https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu&display=swap");
 body{margin:0;background:#f5f6f2;color:#25332f;font-family:"Noto Naskh Arabic",Tahoma,sans-serif;line-height:2}
 .page{width:min(900px,calc(100% - 30px));margin:35px auto 60px}
 .card{background:#fff;border:1px solid #e1e5df;border-radius:16px;padding:28px;box-shadow:0 5px 24px rgba(0,0,0,.05)}
@@ -23,10 +23,10 @@ input:focus,select:focus,textarea:focus{border-color:#527d70;box-shadow:0 0 0 3p
 .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
 button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bold;cursor:pointer}
 .primary{background:#123c32;color:#fff}.secondary{background:#e9eee9;color:#123c32}
-.toolbar{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin:0 0 10px;direction:ltr}
-.toolbar select,.toolbar button{width:auto;max-width:none;height:42px;padding:6px 12px;font-size:14px}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin:0 0 10px;direction:ltr}.toolbar-label{font-size:13px;font-weight:bold;color:#123c32;white-space:nowrap}.color-label{display:flex;align-items:center;gap:4px;padding:5px 8px;border:1px solid #cfd6d0;border-radius:9px;background:#fff;font-size:18px}.color-label input{width:34px;height:30px;padding:0;border:0;cursor:pointer}
+.toolbar select,.toolbar button{width:auto;max-width:none;height:42px;padding:6px 12px;font-size:14px}.toolbar select{font-family:"Noto Naskh Arabic",Tahoma,sans-serif}
 .toolbar select{font-family:"Noto Naskh Arabic",Tahoma,sans-serif}
-.emoji-panel{display:flex;gap:6px;flex-wrap:wrap;padding:10px;margin:-4px 0 10px;border:1px solid #dfe5df;border-radius:9px;background:#f8faf7;direction:ltr}
+.emoji-panel{display:flex;gap:6px;flex-wrap:wrap;padding:10px;margin:-4px 0 10px;border:1px solid #dfe5df;border-radius:9px;background:#f8faf7;direction:ltr}.emoji-panel button{background:#fff;border:1px solid #dfe5df;padding:5px 8px;font-size:22px;line-height:1.2}.emoji-panel button:hover{background:#e8eee8}
 .emoji-panel span{cursor:pointer;font-size:22px;padding:3px 6px;border-radius:6px}
 .emoji-panel span:hover{background:#e8eee8}
 .help{font-size:13px;color:#68736f;margin-top:5px}
@@ -57,11 +57,52 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 
 <div class="field">
-<label for="content">📄 مضمون</label>\n<div style="display:flex;gap:8px;justify-content:flex-start;margin-bottom:8px;direction:ltr"><button type="button" class="secondary" onclick="changeFontSize(-1)">A−</button><button type="button" class="secondary" onclick="changeFontSize(1)">A+</button></div>
-<div id="emojiPanel" class="emoji-panel" hidden>
-<span onclick="insertEmoji('😀')">😀</span><span onclick="insertEmoji('😂')">😂</span><span onclick="insertEmoji('😊')">😊</span><span onclick="insertEmoji('😍')">😍</span><span onclick="insertEmoji('❤️')">❤️</span><span onclick="insertEmoji('🌹')">🌹</span><span onclick="insertEmoji('🌿')">🌿</span><span onclick="insertEmoji('📌')">📌</span><span onclick="insertEmoji('⚠️')">⚠️</span><span onclick="insertEmoji('✅')">✅</span><span onclick="insertEmoji('❌')">❌</span><span onclick="insertEmoji('📖')">📖</span><span onclick="insertEmoji('📝')">📝</span><span onclick="insertEmoji('🔹')">🔹</span><span onclick="insertEmoji('🔸')">🔸</span><span onclick="insertEmoji('🍁')">🍁</span><span onclick="insertEmoji('🌸')">🌸</span><span onclick="insertEmoji('🕌')">🕌</span><span onclick="insertEmoji('ﷺ')">ﷺ</span><span onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</span>
+<label for="content">📄 مضمون</label>\n<div class="toolbar" aria-label="محرر النص">
+  <label class="toolbar-label">🔤 فونٹ</label>
+  <select id="fontSelect" onchange="changeFont(this.value)" title="فونٹ منتخب کریں">
+    <option value='"Noto Naskh Arabic",Tahoma,sans-serif'>عربی — Noto Naskh Arabic</option>
+    <option value='"Amiri",serif'>عربی — Amiri</option>
+    <option value='"Noto Nastaliq Urdu",serif'>اردو — Noto Nastaliq Urdu</option>
+    <option value="Tahoma,sans-serif">Tahoma</option>
+    <option value="Arial,sans-serif">Arial</option>
+  </select>
+  <label class="toolbar-label">📐 ترتیب</label>
+  <select id="alignSelect" onchange="changeAlign(this.value)" title="متن کی ترتیب">
+    <option value="justify">جسٹیفائی</option>
+    <option value="right">دائیں</option>
+    <option value="center">درمیان</option>
+    <option value="left">بائیں</option>
+  </select>
+  <button type="button" class="secondary" onclick="changeFontSize(-1)" title="فونٹ چھوٹا کریں">A−</button>
+  <button type="button" class="secondary" onclick="changeFontSize(1)" title="فونٹ بڑا کریں">A+</button>
+  <label class="color-label" title="متن کا رنگ">🎨 <input id="textColor" type="color" value="#25332f" onchange="changeColor(this.value)"></label>
+  <button type="button" class="secondary emoji-toggle" onclick="toggleEmoji()">😊 ایموجیز</button>
+  <button type="button" class="secondary" onclick="insertEmoji('ﷺ')">ﷺ</button>
+  <button type="button" class="secondary" onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</button>
 </div>
-<textarea id="content" placeholder="مکمل مضمون یہاں لکھیں..."></textarea>
+<div id="emojiPanel" class="emoji-panel" hidden>
+  <button type="button" onclick="insertEmoji('😀')">😀</button>
+  <button type="button" onclick="insertEmoji('😂')">😂</button>
+  <button type="button" onclick="insertEmoji('😊')">😊</button>
+  <button type="button" onclick="insertEmoji('😍')">😍</button>
+  <button type="button" onclick="insertEmoji('❤️')">❤️</button>
+  <button type="button" onclick="insertEmoji('🌹')">🌹</button>
+  <button type="button" onclick="insertEmoji('🌿')">🌿</button>
+  <button type="button" onclick="insertEmoji('📌')">📌</button>
+  <button type="button" onclick="insertEmoji('⚠️')">⚠️</button>
+  <button type="button" onclick="insertEmoji('✅')">✅</button>
+  <button type="button" onclick="insertEmoji('❌')">❌</button>
+  <button type="button" onclick="insertEmoji('📖')">📖</button>
+  <button type="button" onclick="insertEmoji('📝')">📝</button>
+  <button type="button" onclick="insertEmoji('🔹')">🔹</button>
+  <button type="button" onclick="insertEmoji('🔸')">🔸</button>
+  <button type="button" onclick="insertEmoji('🍁')">🍁</button>
+  <button type="button" onclick="insertEmoji('🌸')">🌸</button>
+  <button type="button" onclick="insertEmoji('🕌')">🕌</button>
+  <button type="button" onclick="insertEmoji('ﷺ')">ﷺ</button>
+  <button type="button" onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</button>
+</div>
+
 </div>
 
 <div class="field">
@@ -85,12 +126,13 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <script>
 const key='mutalaa_article_draft';
-function val(id){return document.getElementById(id).value}\nfunction changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
-function changeFont(font){document.getElementById('content').style.fontFamily=font;}
-function changeAlign(align){document.getElementById('content').style.textAlign=align;}
+function val(id){return document.getElementById(id).value}
+function changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
+function changeFont(font){document.getElementById('content').style.fontFamily=font;document.getElementById('fontSelect').value=font;}
+function changeAlign(align){document.getElementById('content').style.textAlign=align;document.getElementById('alignSelect').value=align;}
 function changeColor(color){document.getElementById('content').style.color=color;}
 function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden;}
-function insertEmoji(value){const el=document.getElementById('content');const start=el.selectionStart,end=el.selectionEnd;el.value=el.value.slice(0,start)+value+el.value.slice(end);el.focus();el.selectionStart=el.selectionEnd=start+value.length;}
+function insertEmoji(value){const el=document.getElementById('content');el.focus();const start=typeof el.selectionStart==='number'?el.selectionStart:el.value.length;const end=typeof el.selectionEnd==='number'?el.selectionEnd:start;el.setRangeText(value,start,end,'end');el.dispatchEvent(new Event('input',{bubbles:true}));}
 function saveDraft(){
  const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
  localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
