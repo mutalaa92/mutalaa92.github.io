@@ -78,7 +78,6 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
   <button type="button" class="secondary" onclick="changeFontSize(1)">A+</button>
   <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f" onchange="applyColor(this.value)"></label>
   <button type="button" class="secondary" onclick="toggleEmoji()">😊 ایموجیز</button>
-  <button type="button" class="secondary" onclick="$('imagePicker').click()">🖼️ تصویر</button><input id="imagePicker" type="file" accept="image/jpeg,image/png,image/gif,image/webp" multiple hidden onchange="uploadImages(this.files)">
   <button type="button" class="secondary" onclick="insertText('ﷺ')">ﷺ</button>
   <button type="button" class="secondary" onclick="insertText('رضی اللہ عنہ')">رضی اللہ عنہ</button>
 </div>
@@ -91,8 +90,8 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <div class="field">
 <label for="images">🖼️ تصاویر</label>
-<textarea id="images" class="small" placeholder="اپ لوڈ ہونے والی تصاویر کے URL خود یہاں درج ہوں گے"></textarea>
-<p class="help">🖼️ تصویر بٹن دبائیں، کمپیوٹر سے ایک یا ایک سے زیادہ تصاویر منتخب کریں۔ تصویر خودکار طور پر محفوظ ہو کر مضمون میں شامل ہوجائے گی۔</p>
+<textarea id="images" class="small" placeholder="ہر تصویر کا براہِ راست URL الگ سطر میں لکھیں"></textarea>
+<p class="help">اگر تصویر مضمون کے اندر مخصوص جگہ پر چاہیے تو مضمون میں ![تصویر](URL) بھی لکھ سکتے ہیں۔</p>
 </div>
 
 <div class="field">
@@ -111,182 +110,104 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <script>
 const key='mutalaa_article_draft';
-let editFile='';
+function val(id){return document.getElementById(id).value}
+function editor(){return document.getElementById('content')}
 let savedRange=null;
-const $=id=>document.getElementById(id);
-const editor=()=>$('content');
-const val=id=>$(id).value;
-
-function rememberSelection(){
+function saveSelection(){
  const sel=window.getSelection();
- if(sel && sel.rangeCount && editor().contains(sel.anchorNode)) savedRange=sel.getRangeAt(0).cloneRange();
+ if(!sel||!sel.rangeCount)return;
+ const r=sel.getRangeAt(0);
+ if(editor().contains(r.commonAncestorContainer)) savedRange=r.cloneRange();
 }
+document.addEventListener('selectionchange',saveSelection);
+document.addEventListener('mousedown',e=>{if(e.target.closest('.toolbar,.emoji-panel'))saveSelection()});
 function restoreSelection(){
- const ed=editor(); ed.focus();
- if(savedRange && ed.contains(savedRange.commonAncestorContainer)){
-  const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); return;
+ const el=editor();el.focus();
+ if(savedRange){
+  try{
+   if(el.contains(savedRange.commonAncestorContainer)){
+    const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);return true;
+   }
+  }catch(e){savedRange=null;}
  }
- const sel=window.getSelection();
- if(sel && sel.rangeCount && ed.contains(sel.anchorNode)) savedRange=sel.getRangeAt(0).cloneRange();
+ return false;
 }
-function run(command,value){
- restoreSelection();
- try{document.execCommand(command,false,value)}catch(e){}
- rememberSelection();
-}
-function applyFont(font){run('fontName',font)}
-function applyColor(color){run('foreColor',color)}
-function applyAlign(align){
- const map={justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'};
- run(map[align]||'justifyFull',null);
-}
-function formatText(command){run(command,null)}
-function changeFontSize(step){run('fontSize',step>0?'5':'2')}
+function formatText(command){restoreSelection();document.execCommand(command,false,null);saveSelection()}
+function applyFont(font){restoreSelection();document.execCommand('fontName',false,font);saveSelection()}
+function applyColor(color){restoreSelection();document.execCommand('foreColor',false,color);saveSelection()}
+function applyAlign(align){restoreSelection();const m={justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'};document.execCommand(m[align]||'justifyFull',false,null);saveSelection()}
+function changeFontSize(step){restoreSelection();document.execCommand('fontSize',false,step>0?'5':'2');saveSelection()}
 function insertText(value){
  restoreSelection();
- const ed=editor();
- const sel=window.getSelection();
- if(sel && sel.rangeCount && ed.contains(sel.anchorNode)){
-  const range=sel.getRangeAt(0);
-  range.deleteContents();
-  const node=document.createTextNode(value);
-  range.insertNode(node);
-  range.setStartAfter(node); range.collapse(true);
-  sel.removeAllRanges(); sel.addRange(range);
- }else{
-  ed.appendChild(document.createTextNode(value));
- }
- rememberSelection();
+ const ok=document.execCommand('insertText',false,value);
+ if(!ok){const sel=window.getSelection();if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);r.deleteContents();r.insertNode(document.createTextNode(value));r.collapse(false);sel.removeAllRanges();sel.addRange(r)}}
+ saveSelection()
 }
-function toggleEmoji(){ $('emojiPanel').hidden=!$('emojiPanel').hidden; }
-function insertImage(){
- $('imagePicker').click();
-}
-async function uploadImages(files){
- if(!files||!files.length)return;
- const list=[...files];
- const button=[...document.querySelectorAll('.toolbar button')].find(b=>b.textContent.includes('🖼️'));
- const oldText=button?button.textContent:'🖼️ تصویر';
- if(button){button.disabled=true;button.textContent='⏳ اپ لوڈ ہو رہا ہے...';}
- try{
-  let password=sessionStorage.getItem('mutalaa_upload_password')||'';
-  for(const file of list){
-   if(!/^image\/(jpeg|png|gif|webp)$/i.test(file.type)){alert('صرف JPG, PNG, GIF یا WebP تصاویر قابل قبول ہیں: '+file.name);continue;}
-   if(file.size>10*1024*1024){alert('تصویر 10MB سے بڑی ہے: '+file.name);continue;}
-   let result=await sendImage(file,password);
-   if(result.status===401){
-    password=prompt('تصویر اپ لوڈ کرنے کے لیے Upload Password درج کریں:')||'';
-    if(!password)throw new Error('Upload Password درج نہیں کیا گیا۔');
-    result=await sendImage(file,password);
-   }
-   if(!result.ok)throw new Error(result.message||'تصویر اپ لوڈ نہیں ہوسکی۔');
-   sessionStorage.setItem('mutalaa_upload_password',password);
-   insertUploadedImage(result.url);
-   const ta=$('images');
-   ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+result.url;
-  }
- }catch(e){
-  console.error(e);alert(e.message||'تصویر اپ لوڈ نہیں ہوسکی۔');
- }finally{
-  if(button){button.disabled=false;button.textContent=oldText;}
-  $('imagePicker').value='';
- }
-}
-async function sendImage(file,password){
- const fd=new FormData();
- fd.append('image',file,file.name);
- fd.append('password',password);
- const r=await fetch('https://mutalaa.cu.ma/api/upload-image.php',{method:'POST',body:fd,mode:'cors'});
- let data={};
- try{data=await r.json()}catch(e){}
- return {ok:r.ok&&data.success===true,status:r.status,message:data.message||'',url:data.url||''};
-}
-function insertUploadedImage(url){
- restoreSelection();
- const ed=editor(),sel=window.getSelection();
- const img=document.createElement('img');
- img.src=url;img.alt='تصویر';img.loading='lazy';img.style.maxWidth='100%';img.style.height='auto';img.style.display='block';img.style.margin='18px auto';
- if(sel&&sel.rangeCount&&ed.contains(sel.anchorNode)){
-  const range=sel.getRangeAt(0);range.deleteContents();range.insertNode(img);
-  range.setStartAfter(img);range.collapse(true);sel.removeAllRanges();sel.addRange(range);
- }else{
-  ed.appendChild(img);
-  ed.appendChild(document.createElement('br'));
- }
- rememberSelection();
-}
-
-editor().addEventListener('keyup',rememberSelection);
-editor().addEventListener('mouseup',rememberSelection);
-editor().addEventListener('input',rememberSelection);
-document.addEventListener('selectionchange',rememberSelection);
-
-function saveDraft(){
- const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:editor().innerHTML,images:val('images'),videos:val('videos')};
- localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
-}
-function loadDraft(){
- try{
-  const d=JSON.parse(localStorage.getItem(key)||'null'); if(!d)return;
-  ['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)$(id).value=d[id]});
-  if(d.content!==undefined)editor().innerHTML=d.content;
- }catch(e){console.error(e)}
-}
-function clearDraft(){
- if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload();}
-}
-function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-
+function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden}
+function saveDraft(){const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:editor().innerHTML,images:val('images'),videos:val('videos')};localStorage.setItem(key,JSON.stringify(d));alert('مسودہ محفوظ ہوگیا۔')}
+function loadDraft(){try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});if(d.content!==undefined)editor().innerHTML=d.content}catch(e){}}
+function clearDraft(){if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload()}}
+let editFile='';
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 async function loadExistingPosts(){
- const old=$('existingPanel'); if(old)old.remove();
+ const old=document.getElementById('existingPanel'); if(old) old.remove();
  const actions=document.querySelector('.actions');
- const wrap=document.createElement('div'); wrap.className='field'; wrap.id='existingPanel';
+ const wrap=document.createElement('div');
+ wrap.className='field'; wrap.id='existingPanel';
  wrap.innerHTML='<label>📚 ترمیم کے لیے موجودہ مضمون منتخب کریں</label><select id="existingPosts"><option value="">— مضمون منتخب کریں —</option></select><p class="help">مضمون منتخب کریں؛ پھر متن ایڈیٹر میں کھل جائے گا۔</p>';
  actions.parentNode.insertBefore(wrap,actions);
- const select=$('existingPosts');
+ const select=wrap.querySelector('#existingPosts');
  try{
   const r=await fetch('../data/posts.json?v='+Date.now(),{cache:'no-store'});
-  if(!r.ok)throw new Error('posts index not found');
+  if(!r.ok) throw new Error('posts index not found');
   const posts=await r.json();
   select.innerHTML='<option value="">— مضمون منتخب کریں —</option>'+posts.map(p=>'<option value="'+encodeURIComponent(p.file)+'">'+escapeHtml(p.title)+'</option>').join('');
   select.onchange=()=>loadExistingPost(select.value);
- }catch(e){console.error(e);select.innerHTML='<option value="">مضامین لوڈ نہیں ہو سکے</option>';}
+ }catch(e){select.innerHTML='<option value="">مضامین لوڈ نہیں ہو سکے</option>';console.error(e);}
 }
 async function loadExistingPost(encoded){
  if(!encoded)return;
  const file=decodeURIComponent(encoded);
  try{
   const r=await fetch('https://raw.githubusercontent.com/mutalaa92/mutalaa92.github.io/main/_posts/'+encodeURIComponent(file)+'?v='+Date.now(),{cache:'no-store'});
-  if(!r.ok)throw new Error('post not found');
-  const md=await r.text(); editFile=file;
+  if(!r.ok) throw new Error('post not found');
+  const md=await r.text();
+  editFile=file;
   const m=md.match(/^---\n([\s\S]*?)\n---\n?\n?/);
   const fm=m?m[1]:'', body=m?md.slice(m[0].length):md;
   const meta=n=>{
-   const x=fm.split('\n').find(line=>line.startsWith(n+':'));
-   return x?x.slice(n.length+1).trim().replace(/^["']|["']$/g,''):'';
+   const x=fm.match(new RegExp('^'+n+':\\s*["\\\\\\']?(.+?)["\\\\\\']?\\s*$','m'));
+   return x?x[1]:'';
   };
-  $('title').value=meta('title');
-  if(meta('category'))$('category').value=meta('category');
+  document.getElementById('title').value=meta('title');
+  if(meta('category')) document.getElementById('category').value=meta('category');
   const am={justify:'جسٹیفائی',right:'دائیں',left:'بائیں',center:'درمیان'};
-  if(am[meta('alignment')])$('alignment').value=am[meta('alignment')];
+  if(am[meta('alignment')]) document.getElementById('alignment').value=am[meta('alignment')];
   const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);
-  $('images').value=[...new Set(imgs)].join('\n');
+  document.getElementById('images').value=[...new Set(imgs)].join('\n');
   const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);
-  $('videos').value=[...new Set(vids)].join('\n');
-  const clean=body.replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'').replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'').trim();
+  document.getElementById('videos').value=[...new Set(vids)].join('\n');
+  const clean=body
+   .replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'')
+   .replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'')
+   .trim();
   editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
-  savedRange=null; editor().focus();
+  savedRange=null;
+  editor().focus();
+  window.scrollTo({top:0,behavior:'smooth'});
   alert('مضمون ایڈیٹر میں کھل گیا ہے۔ ترمیم کے بعد "GitHub پر مضمون بھیجیں" دبائیں۔');
  }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔');}
 }
 async function publish(){
- const title=val('title').trim(), html=editor().innerHTML.trim();
- if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return;}
+ const title=val('title').trim(),html=editor().innerHTML.trim();
+ if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
  const body=['### 📂 کٹیگری منتخب کریں','',val('category'),'','### 🎨 متن کی ترتیب','',val('alignment'),'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',val('images').trim(),'','### 🎥 ویڈیوز شامل کریں','',val('videos').trim()].join('\n');
  const issueTitle=(editFile?'[ترمیم] ':'[مضمون] ')+title;
- const issueBody=body+(editFile?'\n\n### 🆔 موجودہ فائل\n\n'+editFile:'');
- try{await navigator.clipboard.writeText(issueBody)}catch(e){const ta=document.createElement('textarea');ta.value=issueBody;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
- window.open('https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle),'_blank');
+ const extra=editFile?'\n\n### 🆔 موجودہ فائل\n\n'+editFile:'';
+ const issueBody=body+extra;
+ try{await navigator.clipboard.writeText(issueBody)}catch(e){const ta=document.createElement('textarea');ta.value=issueBody;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
+ const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle);
+ window.open(url,'_blank');
  alert(editFile?'ترمیم شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں۔':'فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں۔');
 }
 loadDraft();
