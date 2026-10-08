@@ -61,25 +61,17 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 <div class="field">
 <label>📄 مضمون</label>
 <div class="toolbar" aria-label="محرر مضمون">
-  <label class="toolbar-label">🔤 منتخب متن کا فونٹ</label>
-  <select id="fontSelect" onchange="applyFont(this.value)">
-    <option value="Noto Naskh Arabic">عربی — Noto Naskh Arabic</option>
-    <option value="Amiri">عربی — Amiri</option>
-    <option value="Noto Nastaliq Urdu">اردو — Noto Nastaliq Urdu</option>
-    <option value="Tahoma">Tahoma</option>
-    <option value="Arial">Arial</option>
-  </select>
+  <label class="toolbar-label">🔤 فونٹ</label>
+  <select id="fontSelect"><option value="Noto Naskh Arabic">Noto Naskh Arabic</option><option value="Amiri">Amiri</option><option value="Noto Nastaliq Urdu">Noto Nastaliq Urdu</option><option value="Tahoma">Tahoma</option><option value="Arial">Arial</option></select>
   <label class="toolbar-label">📐 ترتیب</label>
-  <select id="alignSelect" onchange="applyAlign(this.value)">
-    <option value="justify">جسٹیفائی</option><option value="right">دائیں</option><option value="center">درمیان</option><option value="left">بائیں</option>
-  </select>
-  <button type="button" class="secondary" onclick="formatText('bold')">B</button>
-  <button type="button" class="secondary" onclick="changeFontSize(-1)">A−</button>
-  <button type="button" class="secondary" onclick="changeFontSize(1)">A+</button>
-  <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f" onchange="applyColor(this.value)"></label>
-  <button type="button" class="secondary" onclick="toggleEmoji()">😊 ایموجیز</button>
-  <button type="button" class="secondary" onclick="insertText('ﷺ')">ﷺ</button>
-  <button type="button" class="secondary" onclick="insertText('رضی اللہ عنہ')">رضی اللہ عنہ</button>
+  <select id="alignSelect"><option value="justify">جسٹیفائی</option><option value="right">دائیں</option><option value="center">درمیان</option><option value="left">بائیں</option></select>
+  <button type="button" id="boldBtn" class="secondary">B</button>
+  <button type="button" id="smallerBtn" class="secondary">A−</button>
+  <button type="button" id="largerBtn" class="secondary">A+</button>
+  <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f"></label>
+  <button type="button" id="emojiBtn" class="secondary">😊 ایموجیز</button>
+  <button type="button" id="salawatBtn" class="secondary">ﷺ</button>
+  <button type="button" id="raBtn" class="secondary">رضی اللہ عنہ</button>
 </div>
 <div id="emojiPanel" class="emoji-panel" hidden>
   <button type="button" onclick="insertText('😀')">😀</button><button type="button" onclick="insertText('😂')">😂</button><button type="button" onclick="insertText('😊')">😊</button><button type="button" onclick="insertText('😍')">😍</button><button type="button" onclick="insertText('❤️')">❤️</button><button type="button" onclick="insertText('🌹')">🌹</button><button type="button" onclick="insertText('🌿')">🌿</button><button type="button" onclick="insertText('📌')">📌</button><button type="button" onclick="insertText('⚠️')">⚠️</button><button type="button" onclick="insertText('✅')">✅</button><button type="button" onclick="insertText('❌')">❌</button><button type="button" onclick="insertText('📖')">📖</button><button type="button" onclick="insertText('📝')">📝</button><button type="button" onclick="insertText('🔹')">🔹</button><button type="button" onclick="insertText('🔸')">🔸</button><button type="button" onclick="insertText('🍁')">🍁</button><button type="button" onclick="insertText('🌸')">🌸</button><button type="button" onclick="insertText('🕌')">🕌</button>
@@ -89,9 +81,12 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 
 <div class="field">
-<label for="images">🖼️ تصاویر</label>
-<textarea id="images" class="small" placeholder="ہر تصویر کا براہِ راست URL الگ سطر میں لکھیں"></textarea>
-<p class="help">اگر تصویر مضمون کے اندر مخصوص جگہ پر چاہیے تو مضمون میں ![تصویر](URL) بھی لکھ سکتے ہیں۔</p>
+<label>🖼️ تصویر</label>
+<input id="imageFile" type="file" accept="image/*">
+<button type="button" id="insertImageBtn" class="secondary" style="margin-top:8px">🖼️ منتخب تصویر مضمون میں شامل کریں</button>
+<p class="help">تصویر منتخب کرکے Editor میں شامل کی جا سکتی ہے۔ مستقل GitHub تصویر اپلوڈ کے لیے cPanel کا محفوظ upload endpoint الگ سے درکار ہوگا۔</p>
+<label for="images" style="margin-top:12px">🔗 تصویر کے URL (اختیاری)</label>
+<textarea id="images" class="small" placeholder="اگر پہلے سے موجود تصویر ہو تو URL الگ سطر میں لکھیں"></textarea>
 </div>
 
 <div class="field">
@@ -109,108 +104,138 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </main>
 
 <script>
+(function(){
+'use strict';
 const key='mutalaa_article_draft';
-function val(id){return document.getElementById(id).value}
-function editor(){return document.getElementById('content')}
-let savedRange=null;
+const $=id=>document.getElementById(id);
+const editor=()=>$('content');
+let savedRange=null, editFile='';
+
 function saveSelection(){
- const sel=window.getSelection();
- if(!sel||!sel.rangeCount)return;
- const r=sel.getRangeAt(0);
- if(editor().contains(r.commonAncestorContainer)) savedRange=r.cloneRange();
+  const sel=window.getSelection();
+  if(!sel||!sel.rangeCount)return;
+  const r=sel.getRangeAt(0);
+  if(editor() && editor().contains(r.commonAncestorContainer)) savedRange=r.cloneRange();
 }
-document.addEventListener('selectionchange',saveSelection);
-document.addEventListener('mousedown',e=>{if(e.target.closest('.toolbar,.emoji-panel'))saveSelection()});
 function restoreSelection(){
- const el=editor();el.focus();
- if(savedRange){
-  try{
-   if(el.contains(savedRange.commonAncestorContainer)){
-    const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);return true;
-   }
-  }catch(e){savedRange=null;}
- }
- return false;
+  const el=editor(); if(!el)return false;
+  el.focus();
+  if(savedRange){
+    try{
+      if(el.contains(savedRange.commonAncestorContainer)){
+        const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); return true;
+      }
+    }catch(e){savedRange=null;}
+  }
+  return false;
 }
-function formatText(command){restoreSelection();document.execCommand(command,false,null);saveSelection()}
-function applyFont(font){restoreSelection();document.execCommand('fontName',false,font);saveSelection()}
-function applyColor(color){restoreSelection();document.execCommand('foreColor',false,color);saveSelection()}
-function applyAlign(align){restoreSelection();const m={justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'};document.execCommand(m[align]||'justifyFull',false,null);saveSelection()}
-function changeFontSize(step){restoreSelection();document.execCommand('fontSize',false,step>0?'5':'2');saveSelection()}
+function exec(cmd,value=null){restoreSelection();try{document.execCommand(cmd,false,value)}catch(e){}saveSelection();editor().dispatchEvent(new Event('input',{bubbles:true}))}
 function insertText(value){
- restoreSelection();
- const ok=document.execCommand('insertText',false,value);
- if(!ok){const sel=window.getSelection();if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);r.deleteContents();r.insertNode(document.createTextNode(value));r.collapse(false);sel.removeAllRanges();sel.addRange(r)}}
- saveSelection()
+  restoreSelection();
+  try{
+    if(!document.execCommand('insertText',false,value)){
+      const sel=window.getSelection();
+      if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);r.deleteContents();r.insertNode(document.createTextNode(value));r.collapse(false);sel.removeAllRanges();sel.addRange(r);}
+    }
+  }catch(e){}
+  saveSelection();
 }
-function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden}
-function saveDraft(){const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:editor().innerHTML,images:val('images'),videos:val('videos')};localStorage.setItem(key,JSON.stringify(d));alert('مسودہ محفوظ ہوگیا۔')}
-function loadDraft(){try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});if(d.content!==undefined)editor().innerHTML=d.content}catch(e){}}
-function clearDraft(){if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload()}}
-let editFile='';
+function saveDraft(){
+  const d={category:$('category').value,alignment:$('alignment').value,title:$('title').value,content:editor().innerHTML,images:$('images').value,videos:$('videos').value};
+  localStorage.setItem(key,JSON.stringify(d));
+  alert('مسودہ محفوظ ہوگیا۔');
+}
+function loadDraft(){
+  try{
+    const d=JSON.parse(localStorage.getItem(key)||'null'); if(!d)return;
+    ['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)$(id).value=d[id]});
+    if(d.content!==undefined)editor().innerHTML=d.content;
+  }catch(e){console.error(e)}
+}
+function clearDraft(){
+  if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload();}
+}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
 async function loadExistingPosts(){
- const old=document.getElementById('existingPanel'); if(old) old.remove();
- const actions=document.querySelector('.actions');
- const wrap=document.createElement('div');
- wrap.className='field'; wrap.id='existingPanel';
- wrap.innerHTML='<label>📚 ترمیم کے لیے موجودہ مضمون منتخب کریں</label><select id="existingPosts"><option value="">— مضمون منتخب کریں —</option></select><p class="help">مضمون منتخب کریں؛ پھر متن ایڈیٹر میں کھل جائے گا۔</p>';
- actions.parentNode.insertBefore(wrap,actions);
- const select=wrap.querySelector('#existingPosts');
- try{
-  const r=await fetch('../data/posts.json?v='+Date.now(),{cache:'no-store'});
-  if(!r.ok) throw new Error('posts index not found');
-  const posts=await r.json();
-  select.innerHTML='<option value="">— مضمون منتخب کریں —</option>'+posts.map(p=>'<option value="'+encodeURIComponent(p.file)+'">'+escapeHtml(p.title)+'</option>').join('');
-  select.onchange=()=>loadExistingPost(select.value);
- }catch(e){select.innerHTML='<option value="">مضامین لوڈ نہیں ہو سکے</option>';console.error(e);}
+  const old=$('existingPanel');if(old)old.remove();
+  const actions=document.querySelector('.actions');
+  const wrap=document.createElement('div');wrap.className='field';wrap.id='existingPanel';
+  wrap.innerHTML='<label>📚 ترمیم کے لیے موجودہ مضمون منتخب کریں</label><select id="existingPosts"><option value="">— مضمون منتخب کریں —</option></select><p class="help">مضمون منتخب کریں؛ پھر متن ایڈیٹر میں کھل جائے گا۔</p>';
+  actions.parentNode.insertBefore(wrap,actions);
+  const select=$('existingPosts');
+  try{
+    const r=await fetch('../data/posts.json?v='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error('posts index not found');
+    const posts=await r.json();
+    select.innerHTML='<option value="">— مضمون منتخب کریں —</option>'+posts.map(p=>'<option value="'+encodeURIComponent(p.file)+'">'+escapeHtml(p.title)+'</option>').join('');
+    select.addEventListener('change',()=>loadExistingPost(select.value));
+  }catch(e){console.error(e);select.innerHTML='<option value="">مضامین لوڈ نہیں ہو سکے</option>'}
 }
 async function loadExistingPost(encoded){
- if(!encoded)return;
- const file=decodeURIComponent(encoded);
- try{
-  const r=await fetch('https://raw.githubusercontent.com/mutalaa92/mutalaa92.github.io/main/_posts/'+encodeURIComponent(file)+'?v='+Date.now(),{cache:'no-store'});
-  if(!r.ok) throw new Error('post not found');
-  const md=await r.text();
-  editFile=file;
-  const m=md.match(/^---\n([\s\S]*?)\n---\n?\n?/);
-  const fm=m?m[1]:'', body=m?md.slice(m[0].length):md;
-  const meta=n=>{
-   const x=fm.match(new RegExp('^'+n+':\\s*["\\\\\\']?(.+?)["\\\\\\']?\\s*$','m'));
-   return x?x[1]:'';
-  };
-  document.getElementById('title').value=meta('title');
-  if(meta('category')) document.getElementById('category').value=meta('category');
-  const am={justify:'جسٹیفائی',right:'دائیں',left:'بائیں',center:'درمیان'};
-  if(am[meta('alignment')]) document.getElementById('alignment').value=am[meta('alignment')];
-  const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);
-  document.getElementById('images').value=[...new Set(imgs)].join('\n');
-  const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);
-  document.getElementById('videos').value=[...new Set(vids)].join('\n');
-  const clean=body
-   .replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'')
-   .replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'')
-   .trim();
-  editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
-  savedRange=null;
-  editor().focus();
-  window.scrollTo({top:0,behavior:'smooth'});
-  alert('مضمون ایڈیٹر میں کھل گیا ہے۔ ترمیم کے بعد "GitHub پر مضمون بھیجیں" دبائیں۔');
- }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔');}
+  if(!encoded)return;
+  const file=decodeURIComponent(encoded);
+  try{
+    const r=await fetch('https://raw.githubusercontent.com/mutalaa92/mutalaa92.github.io/main/_posts/'+encodeURIComponent(file)+'?v='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error('post not found');
+    const md=await r.text();editFile=file;
+    const m=md.match(/^---\n([\s\S]*?)\n---\n?\n?/),fm=m?m[1]:'',body=m?md.slice(m[0].length):md;
+    const meta=n=>{const x=fm.match(new RegExp('^'+n+':\\s*["\\\']?(.+?)["\\\']?\\s*$','m'));return x?x[1]:''};
+    $('title').value=meta('title'); if(meta('category'))$('category').value=meta('category');
+    const am={justify:'جسٹیفائی',right:'دائیں',left:'بائیں',center:'درمیان'};if(am[meta('alignment')])$('alignment').value=am[meta('alignment')];
+    const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);$('images').value=[...new Set(imgs)].join('\n');
+    const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);$('videos').value=[...new Set(vids)].join('\n');
+    const clean=body.replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'').replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'').trim();
+    editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
+    savedRange=null;editor().focus();window.scrollTo({top:0,behavior:'smooth'});alert('مضمون ایڈیٹر میں کھل گیا ہے۔');
+  }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔')}
 }
 async function publish(){
- const title=val('title').trim(),html=editor().innerHTML.trim();
- if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
- const body=['### 📂 کٹیگری منتخب کریں','',val('category'),'','### 🎨 متن کی ترتیب','',val('alignment'),'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',val('images').trim(),'','### 🎥 ویڈیوز شامل کریں','',val('videos').trim()].join('\n');
- const issueTitle=(editFile?'[ترمیم] ':'[مضمون] ')+title;
- const extra=editFile?'\n\n### 🆔 موجودہ فائل\n\n'+editFile:'';
- const issueBody=body+extra;
- try{await navigator.clipboard.writeText(issueBody)}catch(e){const ta=document.createElement('textarea');ta.value=issueBody;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
- const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle);
- window.open(url,'_blank');
- alert(editFile?'ترمیم شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں۔':'فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں۔');
+  const title=$('title').value.trim(),html=editor().innerHTML.trim();
+  if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
+  const body=['### 📂 کٹیگری منتخب کریں','',$('category').value,'','### 🎨 متن کی ترتیب','',$('alignment').value,'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',$('images').value.trim(),'','### 🎥 ویڈیوز شامل کریں','',$('videos').value.trim()].join('\n');
+  const issueTitle=(editFile?'[ترمیم] ':'[مضمون] ')+title,extra=editFile?'\\n\\n### 🆔 موجودہ فائل\\n\\n'+editFile:'',issueBody=body+extra;
+  try{await navigator.clipboard.writeText(issueBody)}catch(e){const ta=document.createElement('textarea');ta.value=issueBody;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
+  window.open('https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle),'_blank');
+  alert(editFile?'ترمیم شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔':'فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔');
 }
+
+function insertImage(){
+  const input=$('imageFile');if(!input.files||!input.files[0]){alert('پہلے تصویر منتخب کریں۔');return}
+  const file=input.files[0];
+  if(!file.type.startsWith('image/')){alert('صرف تصویر کی فائل منتخب کریں۔');return}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    restoreSelection();
+    const img=document.createElement('img');img.src=reader.result;img.alt=file.name;img.style.maxWidth='100%';img.style.height='auto';
+    const sel=window.getSelection();
+    if(sel&&sel.rangeCount){const r=sel.getRangeAt(0);r.deleteContents();r.insertNode(img);r.setStartAfter(img);r.collapse(true);sel.removeAllRanges();sel.addRange(r)}
+    saveSelection();
+    alert('تصویر Editor میں شامل ہوگئی ہے۔');
+  };
+  reader.readAsDataURL(file);
+}
+
+document.addEventListener('selectionchange',saveSelection);
+document.addEventListener('mousedown',e=>{if(e.target.closest('.toolbar,.emoji-panel'))saveSelection()});
+$('fontSelect').addEventListener('change',e=>exec('fontName',e.target.value));
+$('alignSelect').addEventListener('change',e=>exec({justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'}[e.target.value]||'justifyFull'));
+$('boldBtn').addEventListener('click',()=>exec('bold'));
+$('smallerBtn').addEventListener('click',()=>exec('fontSize','2'));
+$('largerBtn').addEventListener('click',()=>exec('fontSize','5'));
+$('textColor').addEventListener('change',e=>exec('foreColor',e.target.value));
+$('emojiBtn').addEventListener('click',()=>{$('emojiPanel').hidden=!$('emojiPanel').hidden});
+$('salawatBtn').addEventListener('click',()=>insertText('ﷺ'));
+$('raBtn').addEventListener('click',()=>insertText('رضی اللہ عنہ'));
+document.querySelectorAll('#emojiPanel button').forEach(b=>b.addEventListener('click',()=>insertText(b.textContent)));
+$('insertImageBtn').addEventListener('click',insertImage);
+$('content').addEventListener('input',saveSelection);
+document.querySelector('.actions button.primary').addEventListener('click',publish);
+document.querySelectorAll('.actions button.secondary')[0].addEventListener('click',loadExistingPosts);
+document.querySelectorAll('.actions button.secondary')[1].addEventListener('click',saveDraft);
+document.querySelectorAll('.actions button.secondary')[2].addEventListener('click',clearDraft);
 loadDraft();
+})();
 </script>
 </body>
 </html>
