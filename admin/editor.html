@@ -78,7 +78,7 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
   <button type="button" class="secondary" onclick="changeFontSize(1)">A+</button>
   <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f" onchange="applyColor(this.value)"></label>
   <button type="button" class="secondary" onclick="toggleEmoji()">😊 ایموجیز</button>
-  <button type="button" class="secondary" onclick="insertImage()">🖼️ تصویر</button>
+  <button type="button" class="secondary" onclick="$('imagePicker').click()">🖼️ تصویر</button><input id="imagePicker" type="file" accept="image/jpeg,image/png,image/gif,image/webp" multiple hidden onchange="uploadImages(this.files)">
   <button type="button" class="secondary" onclick="insertText('ﷺ')">ﷺ</button>
   <button type="button" class="secondary" onclick="insertText('رضی اللہ عنہ')">رضی اللہ عنہ</button>
 </div>
@@ -91,8 +91,8 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <div class="field">
 <label for="images">🖼️ تصاویر</label>
-<textarea id="images" class="small" placeholder="ہر تصویر کا براہِ راست URL الگ سطر میں لکھیں"></textarea>
-<p class="help">اگر تصویر مضمون کے اندر مخصوص جگہ پر چاہیے تو مضمون میں ![تصویر](URL) بھی لکھ سکتے ہیں۔</p>
+<textarea id="images" class="small" placeholder="اپ لوڈ ہونے والی تصاویر کے URL خود یہاں درج ہوں گے"></textarea>
+<p class="help">🖼️ تصویر بٹن دبائیں، کمپیوٹر سے ایک یا ایک سے زیادہ تصاویر منتخب کریں۔ تصویر خودکار طور پر محفوظ ہو کر مضمون میں شامل ہوجائے گی۔</p>
 </div>
 
 <div class="field">
@@ -160,17 +160,59 @@ function insertText(value){
 }
 function toggleEmoji(){ $('emojiPanel').hidden=!$('emojiPanel').hidden; }
 function insertImage(){
- const url=prompt('تصویر کا براہِ راست URL درج کریں:');
- if(!url||!/^https?:\/\//i.test(url))return;
+ $('imagePicker').click();
+}
+async function uploadImages(files){
+ if(!files||!files.length)return;
+ const list=[...files];
+ const button=[...document.querySelectorAll('.toolbar button')].find(b=>b.textContent.includes('🖼️'));
+ const oldText=button?button.textContent:'🖼️ تصویر';
+ if(button){button.disabled=true;button.textContent='⏳ اپ لوڈ ہو رہا ہے...';}
+ try{
+  let password=sessionStorage.getItem('mutalaa_upload_password')||'';
+  for(const file of list){
+   if(!/^image\/(jpeg|png|gif|webp)$/i.test(file.type)){alert('صرف JPG, PNG, GIF یا WebP تصاویر قابل قبول ہیں: '+file.name);continue;}
+   if(file.size>10*1024*1024){alert('تصویر 10MB سے بڑی ہے: '+file.name);continue;}
+   let result=await sendImage(file,password);
+   if(result.status===401){
+    password=prompt('تصویر اپ لوڈ کرنے کے لیے Upload Password درج کریں:')||'';
+    if(!password)throw new Error('Upload Password درج نہیں کیا گیا۔');
+    result=await sendImage(file,password);
+   }
+   if(!result.ok)throw new Error(result.message||'تصویر اپ لوڈ نہیں ہوسکی۔');
+   sessionStorage.setItem('mutalaa_upload_password',password);
+   insertUploadedImage(result.url);
+   const ta=$('images');
+   ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+result.url;
+  }
+ }catch(e){
+  console.error(e);alert(e.message||'تصویر اپ لوڈ نہیں ہوسکی۔');
+ }finally{
+  if(button){button.disabled=false;button.textContent=oldText;}
+  $('imagePicker').value='';
+ }
+}
+async function sendImage(file,password){
+ const fd=new FormData();
+ fd.append('image',file,file.name);
+ fd.append('password',password);
+ const r=await fetch('https://mutalaa.cu.ma/api/upload-image.php',{method:'POST',body:fd,mode:'cors'});
+ let data={};
+ try{data=await r.json()}catch(e){}
+ return {ok:r.ok&&data.success===true,status:r.status,message:data.message||'',url:data.url||''};
+}
+function insertUploadedImage(url){
  restoreSelection();
- const ed=editor(), sel=window.getSelection();
+ const ed=editor(),sel=window.getSelection();
  const img=document.createElement('img');
- img.src=url; img.alt='تصویر'; img.style.maxWidth='100%'; img.style.height='auto';
+ img.src=url;img.alt='تصویر';img.loading='lazy';img.style.maxWidth='100%';img.style.height='auto';img.style.display='block';img.style.margin='18px auto';
  if(sel&&sel.rangeCount&&ed.contains(sel.anchorNode)){
-  const range=sel.getRangeAt(0); range.deleteContents(); range.insertNode(img);
-  range.setStartAfter(img); range.collapse(true);
-  sel.removeAllRanges(); sel.addRange(range);
- }else{ed.appendChild(img);}
+  const range=sel.getRangeAt(0);range.deleteContents();range.insertNode(img);
+  range.setStartAfter(img);range.collapse(true);sel.removeAllRanges();sel.addRange(range);
+ }else{
+  ed.appendChild(img);
+  ed.appendChild(document.createElement('br'));
+ }
  rememberSelection();
 }
 
