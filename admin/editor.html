@@ -161,7 +161,7 @@ function insertText(value){
 function toggleEmoji(){ $('emojiPanel').hidden=!$('emojiPanel').hidden; }
 function insertImage(){
  const url=prompt('تصویر کا براہِ راست URL درج کریں:');
- if(!url||!/^https?:\\/\\//i.test(url))return;
+ if(!url||!/^https?:\/\//i.test(url))return;
  restoreSelection();
  const ed=editor(), sel=window.getSelection();
  const img=document.createElement('img');
