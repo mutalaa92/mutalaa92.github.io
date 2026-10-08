@@ -78,6 +78,7 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
   <button type="button" class="secondary" onclick="changeFontSize(1)">A+</button>
   <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f" onchange="applyColor(this.value)"></label>
   <button type="button" class="secondary" onclick="toggleEmoji()">😊 ایموجیز</button>
+  <button type="button" class="secondary" onclick="insertImage()">🖼️ تصویر</button>
   <button type="button" class="secondary" onclick="insertText('ﷺ')">ﷺ</button>
   <button type="button" class="secondary" onclick="insertText('رضی اللہ عنہ')">رضی اللہ عنہ</button>
 </div>
@@ -158,6 +159,20 @@ function insertText(value){
  rememberSelection();
 }
 function toggleEmoji(){ $('emojiPanel').hidden=!$('emojiPanel').hidden; }
+function insertImage(){
+ const url=prompt('تصویر کا براہِ راست URL درج کریں:');
+ if(!url||!/^https?:\\/\\//i.test(url))return;
+ restoreSelection();
+ const ed=editor(), sel=window.getSelection();
+ const img=document.createElement('img');
+ img.src=url; img.alt='تصویر'; img.style.maxWidth='100%'; img.style.height='auto';
+ if(sel&&sel.rangeCount&&ed.contains(sel.anchorNode)){
+  const range=sel.getRangeAt(0); range.deleteContents(); range.insertNode(img);
+  range.setStartAfter(img); range.collapse(true);
+  sel.removeAllRanges(); sel.addRange(range);
+ }else{ed.appendChild(img);}
+ rememberSelection();
+}
 
 editor().addEventListener('keyup',rememberSelection);
 editor().addEventListener('mouseup',rememberSelection);
