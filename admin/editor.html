@@ -196,7 +196,7 @@ async function publish(){
   const body=['### 📂 کٹیگری منتخب کریں','',$('category').value,'','### 🎨 متن کی ترتیب','',$('alignment').value,'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',$('images').value.trim(),'','### 🎥 ویڈیوز شامل کریں','',$('videos').value.trim()].join('\n');
   const issueTitle=(editFile?'[ترمیم] ':'[مضمون] ')+title,extra=editFile?'\\n\\n### 🆔 موجودہ فائل\\n\\n'+editFile:'',issueBody=body+extra;
   try{await navigator.clipboard.writeText(issueBody)}catch(e){const ta=document.createElement('textarea');ta.value=issueBody;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
-  window.open('https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle),'_blank');
+  window.open('https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent(issueTitle)+'&body='+encodeURIComponent(issueBody),'_blank');
   alert(editFile?'ترمیم شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔':'فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔');
 }
 
