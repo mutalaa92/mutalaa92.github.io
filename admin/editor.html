@@ -176,8 +176,8 @@ async function loadExistingPost(encoded){
   const m=md.match(/^---\n([\s\S]*?)\n---\n?\n?/);
   const fm=m?m[1]:'', body=m?md.slice(m[0].length):md;
   const meta=n=>{
-   const x=fm.match(new RegExp('^'+n+':\\s*["\\\\\\']?(.+?)["\\\\\\']?\\s*$','m'));
-   return x?x[1]:'';
+   const x=fm.match(new RegExp("^"+n+":\\\\s*([^\\\\n]+)$","m"));
+   return x?x[1].replace(/^["']|["']$/g,''):'';
   };
   document.getElementById('title').value=meta('title');
   if(meta('category')) document.getElementById('category').value=meta('category');
