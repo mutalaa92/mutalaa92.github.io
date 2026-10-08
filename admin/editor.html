@@ -20,6 +20,8 @@ input,select{height:48px}
 textarea{min-height:520px;resize:vertical;text-align:right;direction:rtl;font-family:"Noto Naskh Arabic",Tahoma,sans-serif;font-size:19px;line-height:2.15}
 textarea.small{min-height:130px}
 input:focus,select:focus,textarea:focus{border-color:#527d70;box-shadow:0 0 0 3px rgba(82,125,112,.12)}
+.editor{width:100%;max-width:850px;min-height:520px;margin:0 auto;border:1px solid #cfd6d0;border-radius:9px;background:#fff;padding:18px 16px;font-family:"Noto Naskh Arabic",Tahoma,sans-serif;font-size:19px;line-height:2.15;text-align:justify;direction:rtl;outline:none;overflow:auto;white-space:pre-wrap}
+.editor:empty:before{content:attr(data-placeholder);color:#9aa39f;pointer-events:none}
 .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
 button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bold;cursor:pointer}
 .primary{background:#123c32;color:#fff}.secondary{background:#e9eee9;color:#123c32}
@@ -57,54 +59,33 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 
 <div class="field">
-<label for="content">📄 مضمون</label>\n<div class="toolbar" aria-label="محرر النص">
-  <label class="toolbar-label">🔤 فونٹ</label>
-  <select id="fontSelect" onchange="changeFont(this.value)" title="فونٹ منتخب کریں">
-    <option value='"Noto Naskh Arabic",Tahoma,sans-serif'>عربی — Noto Naskh Arabic</option>
-    <option value='"Amiri",serif'>عربی — Amiri</option>
-    <option value='"Noto Nastaliq Urdu",serif'>اردو — Noto Nastaliq Urdu</option>
-    <option value="Tahoma,sans-serif">Tahoma</option>
-    <option value="Arial,sans-serif">Arial</option>
+<label>📄 مضمون</label>
+<div class="toolbar" aria-label="محرر مضمون">
+  <label class="toolbar-label">🔤 منتخب متن کا فونٹ</label>
+  <select id="fontSelect" onchange="applyFont(this.value)">
+    <option value="Noto Naskh Arabic">عربی — Noto Naskh Arabic</option>
+    <option value="Amiri">عربی — Amiri</option>
+    <option value="Noto Nastaliq Urdu">اردو — Noto Nastaliq Urdu</option>
+    <option value="Tahoma">Tahoma</option>
+    <option value="Arial">Arial</option>
   </select>
   <label class="toolbar-label">📐 ترتیب</label>
-  <select id="alignSelect" onchange="changeAlign(this.value)" title="متن کی ترتیب">
-    <option value="justify">جسٹیفائی</option>
-    <option value="right">دائیں</option>
-    <option value="center">درمیان</option>
-    <option value="left">بائیں</option>
+  <select id="alignSelect" onchange="applyAlign(this.value)">
+    <option value="justify">جسٹیفائی</option><option value="right">دائیں</option><option value="center">درمیان</option><option value="left">بائیں</option>
   </select>
-  <button type="button" class="secondary" onclick="changeFontSize(-1)" title="فونٹ چھوٹا کریں">A−</button>
-  <button type="button" class="secondary" onclick="changeFontSize(1)" title="فونٹ بڑا کریں">A+</button>
-  <label class="color-label" title="متن کا رنگ">🎨 <input id="textColor" type="color" value="#25332f" onchange="changeColor(this.value)"></label>
-  <button type="button" class="secondary emoji-toggle" onclick="toggleEmoji()">😊 ایموجیز</button>
-  <button type="button" class="secondary" onclick="insertEmoji('ﷺ')">ﷺ</button>
-  <button type="button" class="secondary" onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</button>
+  <button type="button" class="secondary" onclick="formatText('bold')">B</button>
+  <button type="button" class="secondary" onclick="changeFontSize(-1)">A−</button>
+  <button type="button" class="secondary" onclick="changeFontSize(1)">A+</button>
+  <label class="color-label">🎨 <input id="textColor" type="color" value="#25332f" onchange="applyColor(this.value)"></label>
+  <button type="button" class="secondary" onclick="toggleEmoji()">😊 ایموجیز</button>
+  <button type="button" class="secondary" onclick="insertText('ﷺ')">ﷺ</button>
+  <button type="button" class="secondary" onclick="insertText('رضی اللہ عنہ')">رضی اللہ عنہ</button>
 </div>
 <div id="emojiPanel" class="emoji-panel" hidden>
-  <button type="button" onclick="insertEmoji('😀')">😀</button>
-  <button type="button" onclick="insertEmoji('😂')">😂</button>
-  <button type="button" onclick="insertEmoji('😊')">😊</button>
-  <button type="button" onclick="insertEmoji('😍')">😍</button>
-  <button type="button" onclick="insertEmoji('❤️')">❤️</button>
-  <button type="button" onclick="insertEmoji('🌹')">🌹</button>
-  <button type="button" onclick="insertEmoji('🌿')">🌿</button>
-  <button type="button" onclick="insertEmoji('📌')">📌</button>
-  <button type="button" onclick="insertEmoji('⚠️')">⚠️</button>
-  <button type="button" onclick="insertEmoji('✅')">✅</button>
-  <button type="button" onclick="insertEmoji('❌')">❌</button>
-  <button type="button" onclick="insertEmoji('📖')">📖</button>
-  <button type="button" onclick="insertEmoji('📝')">📝</button>
-  <button type="button" onclick="insertEmoji('🔹')">🔹</button>
-  <button type="button" onclick="insertEmoji('🔸')">🔸</button>
-  <button type="button" onclick="insertEmoji('🍁')">🍁</button>
-  <button type="button" onclick="insertEmoji('🌸')">🌸</button>
-  <button type="button" onclick="insertEmoji('🕌')">🕌</button>
-  <button type="button" onclick="insertEmoji('ﷺ')">ﷺ</button>
-  <button type="button" onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</button>
+  <button type="button" onclick="insertText('😀')">😀</button><button type="button" onclick="insertText('😂')">😂</button><button type="button" onclick="insertText('😊')">😊</button><button type="button" onclick="insertText('😍')">😍</button><button type="button" onclick="insertText('❤️')">❤️</button><button type="button" onclick="insertText('🌹')">🌹</button><button type="button" onclick="insertText('🌿')">🌿</button><button type="button" onclick="insertText('📌')">📌</button><button type="button" onclick="insertText('⚠️')">⚠️</button><button type="button" onclick="insertText('✅')">✅</button><button type="button" onclick="insertText('❌')">❌</button><button type="button" onclick="insertText('📖')">📖</button><button type="button" onclick="insertText('📝')">📝</button><button type="button" onclick="insertText('🔹')">🔹</button><button type="button" onclick="insertText('🔸')">🔸</button><button type="button" onclick="insertText('🍁')">🍁</button><button type="button" onclick="insertText('🌸')">🌸</button><button type="button" onclick="insertText('🕌')">🕌</button>
 </div>
-<textarea id="content" placeholder="مکمل مضمون یہاں لکھیں..."></textarea>
-
-
+<div id="content" class="editor" contenteditable="true" spellcheck="false" data-placeholder="مکمل مضمون یہاں لکھیں..."></div>
+<p class="help">جس عبارت کا فونٹ، رنگ یا سائز تبدیل کرنا ہو اسے پہلے منتخب کریں۔ اس طرح ایک ہی مضمون میں عربی اور اردو الگ الگ فونٹ میں رہیں گی۔</p>
 </div>
 
 <div class="field">
@@ -129,37 +110,25 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 <script>
 const key='mutalaa_article_draft';
 function val(id){return document.getElementById(id).value}
-function changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
-function changeFont(font){document.getElementById('content').style.fontFamily=font;document.getElementById('fontSelect').value=font;}
-function changeAlign(align){document.getElementById('content').style.textAlign=align;document.getElementById('alignSelect').value=align;}
-function changeColor(color){document.getElementById('content').style.color=color;}
-function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden;}
-function insertEmoji(value){const el=document.getElementById('content');el.focus();const start=typeof el.selectionStart==='number'?el.selectionStart:el.value.length;const end=typeof el.selectionEnd==='number'?el.selectionEnd:start;el.setRangeText(value,start,end,'end');el.dispatchEvent(new Event('input',{bubbles:true}));}
-function saveDraft(){
- const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
- localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
-}
-function loadDraft(){
- try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;
- ['category','alignment','title','content','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});
- }catch(e){}
-}
+function editor(){return document.getElementById('content')}
+function focusEditor(){editor().focus()}
+function formatText(command){focusEditor();document.execCommand(command,false,null)}
+function applyFont(font){focusEditor();document.execCommand('fontName',false,font)}
+function applyColor(color){focusEditor();document.execCommand('foreColor',false,color)}
+function applyAlign(align){focusEditor();const m={justify:'justifyFull',right:'justifyRight',left:'justifyLeft',center:'justifyCenter'};document.execCommand(m[align]||'justifyFull',false,null)}
+function changeFontSize(step){focusEditor();document.execCommand('fontSize',false,step>0?'5':'2')}
+function insertText(value){focusEditor();document.execCommand('insertText',false,value)}
+function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden}
+function saveDraft(){const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:editor().innerHTML,images:val('images'),videos:val('videos')};localStorage.setItem(key,JSON.stringify(d));alert('مسودہ محفوظ ہوگیا۔')}
+function loadDraft(){try{const d=JSON.parse(localStorage.getItem(key)||'null');if(!d)return;['category','alignment','title','images','videos'].forEach(id=>{if(d[id]!==undefined)document.getElementById(id).value=d[id]});if(d.content!==undefined)editor().innerHTML=d.content}catch(e){}}
 function clearDraft(){if(confirm('کیا محفوظ شدہ مسودہ صاف کرنا چاہتے ہیں؟')){localStorage.removeItem(key);location.reload()}}
 async function publish(){
- const title=val('title').trim(),content=val('content').trim();
- if(!title||!content){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
- const body=[
- '### 📂 کٹیگری منتخب کریں','',val('category'),'',
- '### 🎨 متن کی ترتیب','',val('alignment'),'',
- '### 📝 مضمون کا عنوان','',title,'',
- '### 📄 مضمون','',content,'',
- '### 🖼️ تصاویر شامل کریں','',val('images').trim(),'',
- '### 🎥 ویڈیوز شامل کریں','',val('videos').trim()
- ].join('\n');
- await navigator.clipboard.writeText(body);
+ const title=val('title').trim(),html=editor().innerHTML.trim();
+ if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
+ const body=['### 📂 کٹیگری منتخب کریں','',val('category'),'','### 🎨 متن کی ترتیب','',val('alignment'),'','### 📝 مضمون کا عنوان','',title,'','### 📄 مضمون','',html,'','### 🖼️ تصاویر شامل کریں','',val('images').trim(),'','### 🎥 ویڈیوز شامل کریں','',val('videos').trim()].join('\n');
+ try{await navigator.clipboard.writeText(body)}catch(e){const ta=document.createElement('textarea');ta.value=body;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
  const url='https://github.com/mutalaa92/mutalaa92.github.io/issues/new?title='+encodeURIComponent('[مضمون] '+title);
- window.open(url,'_blank');
- alert('مضمون کا مکمل متن کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub میں نیا Issue کھلنے کے بعد Ctrl+V سے متن پیسٹ کر دیں، پھر مضمون شائع کریں۔');
+ window.open(url,'_blank');alert('فارمیٹ شدہ مضمون کلپ بورڈ میں کاپی ہوگیا ہے۔ GitHub Issue میں Ctrl+V سے پیسٹ کریں، پھر مضمون شائع کریں۔');
 }
 loadDraft();
 </script>
