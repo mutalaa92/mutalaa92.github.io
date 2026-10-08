@@ -26,6 +26,9 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 .toolbar{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin:0 0 10px;direction:ltr}
 .toolbar select,.toolbar button{width:auto;max-width:none;height:42px;padding:6px 12px;font-size:14px}
 .toolbar select{font-family:"Noto Naskh Arabic",Tahoma,sans-serif}
+.emoji-panel{display:flex;gap:6px;flex-wrap:wrap;padding:10px;margin:-4px 0 10px;border:1px solid #dfe5df;border-radius:9px;background:#f8faf7;direction:ltr}
+.emoji-panel span{cursor:pointer;font-size:22px;padding:3px 6px;border-radius:6px}
+.emoji-panel span:hover{background:#e8eee8}
 .help{font-size:13px;color:#68736f;margin-top:5px}
 @media(max-width:600px){.page{width:calc(100% - 20px);margin:20px auto 40px}.card{padding:18px}h1{font-size:25px}textarea{min-height:420px}}
 </style>
@@ -55,6 +58,9 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 
 <div class="field">
 <label for="content">📄 مضمون</label>\n<div style="display:flex;gap:8px;justify-content:flex-start;margin-bottom:8px;direction:ltr"><button type="button" class="secondary" onclick="changeFontSize(-1)">A−</button><button type="button" class="secondary" onclick="changeFontSize(1)">A+</button></div>
+<div id="emojiPanel" class="emoji-panel" hidden>
+<span onclick="insertEmoji('😀')">😀</span><span onclick="insertEmoji('😂')">😂</span><span onclick="insertEmoji('😊')">😊</span><span onclick="insertEmoji('😍')">😍</span><span onclick="insertEmoji('❤️')">❤️</span><span onclick="insertEmoji('🌹')">🌹</span><span onclick="insertEmoji('🌿')">🌿</span><span onclick="insertEmoji('📌')">📌</span><span onclick="insertEmoji('⚠️')">⚠️</span><span onclick="insertEmoji('✅')">✅</span><span onclick="insertEmoji('❌')">❌</span><span onclick="insertEmoji('📖')">📖</span><span onclick="insertEmoji('📝')">📝</span><span onclick="insertEmoji('🔹')">🔹</span><span onclick="insertEmoji('🔸')">🔸</span><span onclick="insertEmoji('🍁')">🍁</span><span onclick="insertEmoji('🌸')">🌸</span><span onclick="insertEmoji('🕌')">🕌</span><span onclick="insertEmoji('ﷺ')">ﷺ</span><span onclick="insertEmoji('رضی اللہ عنہ')">رضی اللہ عنہ</span>
+</div>
 <textarea id="content" placeholder="مکمل مضمون یہاں لکھیں..."></textarea>
 </div>
 
@@ -82,6 +88,9 @@ const key='mutalaa_article_draft';
 function val(id){return document.getElementById(id).value}\nfunction changeFontSize(step){const el=document.getElementById('content');const size=parseFloat(getComputedStyle(el).fontSize)||19;el.style.fontSize=Math.max(15,Math.min(28,size+step))+'px';}
 function changeFont(font){document.getElementById('content').style.fontFamily=font;}
 function changeAlign(align){document.getElementById('content').style.textAlign=align;}
+function changeColor(color){document.getElementById('content').style.color=color;}
+function toggleEmoji(){const p=document.getElementById('emojiPanel');p.hidden=!p.hidden;}
+function insertEmoji(value){const el=document.getElementById('content');const start=el.selectionStart,end=el.selectionEnd;el.value=el.value.slice(0,start)+value+el.value.slice(end);el.focus();el.selectionStart=el.selectionEnd=start+value.length;}
 function saveDraft(){
  const d={category:val('category'),alignment:val('alignment'),title:val('title'),content:val('content'),images:val('images'),videos:val('videos')};
  localStorage.setItem(key,JSON.stringify(d)); alert('مسودہ محفوظ ہوگیا۔');
