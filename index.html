@@ -49,6 +49,20 @@ search.addEventListener('input',filter);clear.addEventListener('click',()=>{sear
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function formatDate(value){if(!value)return '';const d=new Date(value);return isNaN(d)?'':d.toLocaleDateString('ur-PK',{year:'numeric',month:'long',day:'numeric'});}
 const categoryIcons={tawheed:'☝️',history:'🏛️',sahaba:'⚔️',sects:'📚',hadith:'🕋',books:'📖',seerah:'ﷺ',scholars:'👥',current:'🌍'};
+function parsePostFrontMatter(text){
+ const match=text.match(/^---\\s*([\\s\\S]*?)\\s*---/);
+ if(!match)return null;
+ const data={};
+ match[1].split("\\n").forEach(line=>{
+  const i=line.indexOf(":");
+  if(i<0)return;
+  const key=line.slice(0,i).trim();
+  let value=line.slice(i+1).trim();
+  if((value.startsWith('"')&&value.endsWith('"'))||(value.startsWith("'")&&value.endsWith("'")))value=value.slice(1,-1);
+  data[key]=value;
+ });
+ return data;
+}
 async function loadLatestPosts(){
  const box=document.getElementById('latestPosts');
  const render=posts=>{
@@ -58,17 +72,31 @@ async function loadLatestPosts(){
   box.innerHTML=posts.slice(0,6).map(p=>'<article class="article-card"><div class="article-image">'+(categoryIcons[p.categoryKey]||'📚')+'</div><div class="article-body"><span class="article-category">'+escapeHtml(p.category)+'</span><h3>'+escapeHtml(p.title)+'</h3><p>'+formatDate(p.date)+'</p><a href="article.html?post='+encodeURIComponent(p.file)+'" class="article-link">مکمل مضمون پڑھیں ←</a></div></article>').join('');
  };
  try{
-  const response=await fetch('data/posts.json?v='+Date.now(),{cache:'no-store'});
-  if(!response.ok) throw new Error('posts index not found');
-  render(await response.json());
- }catch(e){
-  console.error(e);
+  const repo='mutalaa92/mutalaa92.github.io';
+  const response=await fetch('https://api.github.com/repos/'+repo+'/contents/_posts?ref=main&v='+Date.now(),{cache:'no-store'});
+  if(!response.ok)throw new Error('GitHub posts listing unavailable');
+  const files=await response.json();
+  const markdownFiles=files.filter(file=>file&&file.type==='file'&&file.name&&file.name.endsWith('.md'));
+  const results=await Promise.all(markdownFiles.map(async file=>{
+   try{
+    const raw=await fetch('https://raw.githubusercontent.com/'+repo+'/main/_posts/'+encodeURIComponent(file.name)+'?v='+Date.now(),{cache:'no-store'});
+    if(!raw.ok)return null;
+    const data=parsePostFrontMatter(await raw.text());
+    if(!data||!data.title)return null;
+    return {file:file.name,title:data.title,category:data.category||'',categoryKey:data.category_key||data.categoryKey||'',date:data.date||''};
+   }catch(error){console.warn('Could not load post:',file.name,error);return null;}
+  }));
+  const posts=results.filter(Boolean);
+  if(!posts.length)throw new Error('No post metadata could be read');
+  render(posts);
+ }catch(error){
+  console.warn('Live post listing unavailable; trying posts index.',error);
   try{
-   const fallback=await fetch('https://raw.githubusercontent.com/mutalaa92/mutalaa92.github.io/main/data/posts.json?v='+Date.now(),{cache:'no-store'});
-   if(!fallback.ok) throw new Error('fallback posts index not found');
+   const fallback=await fetch('data/posts.json?v='+Date.now(),{cache:'no-store'});
+   if(!fallback.ok)throw new Error('posts index not found');
    render(await fallback.json());
-  }catch(e2){
-   console.error(e2);
+  }catch(fallbackError){
+   console.error(fallbackError);
    box.innerHTML='<div class="no-results" style="display:block">تازہ مضامین لوڈ نہیں ہو سکے۔</div>';
   }
  }
