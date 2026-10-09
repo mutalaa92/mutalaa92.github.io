@@ -1,56 +1,64 @@
 [
-  {
-    "file": "2026-10-08-article-13.md",
-    "title": "ابوہریرہ رضی اللہ عنہ کے دور میں رونما ہونے والے اختلافات کے بارے میں ان کا موقف",
-    "category": "مشاجراتِ صحابہ",
-    "categoryKey": "sahaba",
-    "alignment": "justify",
-    "date": "2026-10-08T18:02:55.002Z",
-    "issue": 13
-  },
-  {
-    "file": "2026-10-07-article-11.md",
-    "title": "🔥 حجاج نے «حمراءِ کوفہ» کی طاقت کیسے توڑی اور ریاست کو کیسے محفوظ کیا؟",
-    "category": "حالاتِ حاضرہ",
-    "categoryKey": "current",
-    "alignment": "justify",
-    "date": "2026-10-07T18:34:34.716Z",
-    "issue": 11
-  },
-  {
-    "file": "2026-10-07-article-10.md",
-    "title": "ویب سائٹ پر آنے والا ایشو حل کر دیا گیا ہے",
-    "category": "حالاتِ حاضرہ",
-    "categoryKey": "current",
-    "alignment": "justify",
-    "date": "2026-10-07T18:15:59.417Z",
-    "issue": 10
-  },
-  {
-    "file": "2026-10-07-article-9.md",
-    "title": "ویب سائٹ پر ایشو حل کر دیا گیا ہے",
-    "category": "عقیدۂ توحید",
-    "categoryKey": "tawheed",
-    "alignment": "justify",
-    "date": "2026-10-07T18:08:05.670Z",
-    "issue": 9
-  },
-  {
-    "file": "2026-10-07-article-8.md",
-    "title": "⚠️ رافضی خطرہ — خمینی دور کی معاصر تین جہتی تصویر",
-    "category": "عقیدۂ توحید",
-    "categoryKey": "tawheed",
-    "alignment": "justify",
-    "date": "2026-10-07T17:41:59.702Z",
-    "issue": 8
-  },
-  {
-    "file": "2026-09-16-article-7.md",
-    "title": "ٹیسٹ",
-    "category": "حالاتِ حاضرہ",
-    "categoryKey": "current",
-    "alignment": "justify",
-    "date": "2026-09-16T09:09:26.834Z",
-    "issue": 7
-  }
+    {
+        "file": "2026-10-09-article-130225-1744.md",
+        "title": "ابوہریرہ رضی اللہ عنہ کے دور میں رونما ہونے والے اختلافات کے بارے میں ان کا موقف",
+        "category": "مشاجراتِ صحابہ",
+        "categoryKey": "sahaba",
+        "alignment": "justify",
+        "date": "2026-10-09T13:02:26+00:00"
+    },
+    {
+        "file": "2026-10-08-article-13.md",
+        "title": "ابوہریرہ رضی اللہ عنہ کے دور میں رونما ہونے والے اختلافات کے بارے میں ان کا موقف",
+        "category": "مشاجراتِ صحابہ",
+        "categoryKey": "sahaba",
+        "alignment": "justify",
+        "date": "2026-10-08T18:02:55.002Z",
+        "issue": 13
+    },
+    {
+        "file": "2026-10-07-article-11.md",
+        "title": "🔥 حجاج نے «حمراءِ کوفہ» کی طاقت کیسے توڑی اور ریاست کو کیسے محفوظ کیا؟",
+        "category": "حالاتِ حاضرہ",
+        "categoryKey": "current",
+        "alignment": "justify",
+        "date": "2026-10-07T18:34:34.716Z",
+        "issue": 11
+    },
+    {
+        "file": "2026-10-07-article-10.md",
+        "title": "ویب سائٹ پر آنے والا ایشو حل کر دیا گیا ہے",
+        "category": "حالاتِ حاضرہ",
+        "categoryKey": "current",
+        "alignment": "justify",
+        "date": "2026-10-07T18:15:59.417Z",
+        "issue": 10
+    },
+    {
+        "file": "2026-10-07-article-9.md",
+        "title": "ویب سائٹ پر ایشو حل کر دیا گیا ہے",
+        "category": "عقیدۂ توحید",
+        "categoryKey": "tawheed",
+        "alignment": "justify",
+        "date": "2026-10-07T18:08:05.670Z",
+        "issue": 9
+    },
+    {
+        "file": "2026-10-07-article-8.md",
+        "title": "⚠️ رافضی خطرہ — خمینی دور کی معاصر تین جہتی تصویر",
+        "category": "عقیدۂ توحید",
+        "categoryKey": "tawheed",
+        "alignment": "justify",
+        "date": "2026-10-07T17:41:59.702Z",
+        "issue": 8
+    },
+    {
+        "file": "2026-09-16-article-7.md",
+        "title": "ٹیسٹ",
+        "category": "حالاتِ حاضرہ",
+        "categoryKey": "current",
+        "alignment": "justify",
+        "date": "2026-09-16T09:09:26.834Z",
+        "issue": 7
+    }
 ]
