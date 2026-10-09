@@ -18,7 +18,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue=context.payload.issue, body=issue.body||'';
-            const get=n=>{const m='### '+n,a=body.indexOf(m);if(a<0)return '';const s=body.slice(a+m.length);const stops=n==='📄 مضمون'?['\\n### 🖼️ تصاویر شامل کریں','\\n### 🎥 ویڈیوز شامل کریں','\\n### 🆔 موجودہ فائل']:['\\n### '];let end=-1;for(const stop of stops){const i=s.indexOf(stop);if(i>=0&&(end<0||i<end))end=i;}return(end<0?s:s.slice(0,end)).trim();};
+            const get=n=>{const m='### '+n,a=body.indexOf(m);if(a<0)return '';const s=body.slice(a+m.length);const stops=n==='📄 مضمون'?['\n### 🖼️ تصاویر شامل کریں','\n### 🎥 ویڈیوز شامل کریں','\n### 🆔 موجودہ فائل']:['\n### '];let end=-1;for(const stop of stops){const i=s.indexOf(stop);if(i>=0&&(end<0||i<end))end=i;}return(end<0?s:s.slice(0,end)).trim();};
             const category=get('📂 کٹیگری منتخب کریں'), alignment=get('🎨 متن کی ترتیب')||'جسٹیفائی', title=get('📝 مضمون کا عنوان'), content=get('📄 مضمون'), file=get('🆔 موجودہ فائل');
             const map={'عقیدۂ توحید':'tawheed','تاریخِ اسلام':'history','مشاجراتِ صحابہ':'sahaba','فرق و مذاهب':'sects','حدیث و آثار':'hadith','کتبِ اسلامیہ':'books','سیرت النبی ﷺ':'seerah','سیرتِ صحابہ و تابعین':'scholars','حالاتِ حاضرہ':'current'};
             const amap={'جسٹیفائی':'justify','دائیں':'right','بائیں':'left','درمیان':'center'};
@@ -46,7 +46,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issue=context.payload.issue, body=issue.body||'';
-            const get=n=>{const m='### '+n,a=body.indexOf(m);if(a<0)return '';const s=body.slice(a+m.length);const stops=n==='📄 مضمون'?['\\n### 🖼️ تصاویر شامل کریں','\\n### 🎥 ویڈیوز شامل کریں','\\n### 🆔 موجودہ فائل']:['\\n### '];let end=-1;for(const stop of stops){const i=s.indexOf(stop);if(i>=0&&(end<0||i<end))end=i;}return(end<0?s:s.slice(0,end)).trim();};
+            const get=n=>{const m='### '+n,a=body.indexOf(m);if(a<0)return '';const s=body.slice(a+m.length);const stops=n==='📄 مضمون'?['\n### 🖼️ تصاویر شامل کریں','\n### 🎥 ویڈیوز شامل کریں','\n### 🆔 موجودہ فائل']:['\n### '];let end=-1;for(const stop of stops){const i=s.indexOf(stop);if(i>=0&&(end<0||i<end))end=i;}return(end<0?s:s.slice(0,end)).trim();};
             const category=get('📂 کٹیگری منتخب کریں'), alignment=get('🎨 متن کی ترتیب')||'جسٹیفائی', title=get('📝 مضمون کا عنوان'), content=get('📄 مضمون');
             const images=get('🖼️ تصاویر شامل کریں'), videos=get('🎥 ویڈیوز شامل کریں');
             const map={'عقیدۂ توحید':'tawheed','تاریخِ اسلام':'history','مشاجراتِ صحابہ':'sahaba','فرق و مذاهب':'sects','حدیث و آثار':'hadith','کتبِ اسلامیہ':'books','سیرت النبی ﷺ':'seerah','سیرتِ صحابہ و تابعین':'scholars','حالاتِ حاضرہ':'current'};
