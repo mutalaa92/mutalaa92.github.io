@@ -50,10 +50,10 @@ function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;',
 function formatDate(value){if(!value)return '';const d=new Date(value);return isNaN(d)?'':d.toLocaleDateString('ur-PK',{year:'numeric',month:'long',day:'numeric'});}
 const categoryIcons={tawheed:'☝️',history:'🏛️',sahaba:'⚔️',sects:'📚',hadith:'🕋',books:'📖',seerah:'ﷺ',scholars:'👥',current:'🌍'};
 function parsePostFrontMatter(text){
- const match=text.match(/^---\\s*([\\s\\S]*?)\\s*---/);
+ const match=text.match(/^---\s*([\s\\S]*?)\s*---/);
  if(!match)return null;
  const data={};
- match[1].split("\\n").forEach(line=>{
+ match[1].split("\n").forEach(line=>{
   const i=line.indexOf(":");
   if(i<0)return;
   const key=line.slice(0,i).trim();
