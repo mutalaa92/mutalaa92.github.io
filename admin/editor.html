@@ -95,13 +95,13 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 
 <div class="field">
-<label for="apiPassword">🔐 محفوظ پبلشنگ پاس ورڈ</label>
-<input id="apiPassword" type="password" autocomplete="current-password" placeholder="cPanel API کا پاس ورڈ درج کریں">
-<p class="help">یہ پاس ورڈ صرف اس براؤزر کے موجودہ فارم میں استعمال ہوگا؛ اسے GitHub فائل میں محفوظ نہیں کیا جائے گا۔</p>
+<label for="githubToken">🔐 GitHub Fine-grained Token</label>
+<input id="githubToken" type="password" autocomplete="off" placeholder="GitHub token یہاں درج کریں">
+<p class="help">ٹوکن صرف اسی وقت براہِ راست GitHub API کو بھیجا جائے گا؛ اسے مسودے یا براؤزر کی مستقل اسٹوریج میں محفوظ نہیں کیا جائے گا۔ ٹوکن کو صرف اسی ریپوزٹری کے Contents: Read and write اختیار تک محدود رکھیں۔</p>
 </div>
 
 <div class="actions">
-<button type="button" class="primary">🚀 GitHub پر مضمون بھیجیں</button>
+<button type="button" class="primary">🚀 GitHub پر براہِ راست شائع کریں</button>
 <button type="button" class="secondary">✏️ موجودہ مضمون میں ترمیم</button>
 <button type="button" class="secondary">💾 مسودہ محفوظ کریں</button>
 <button type="button" class="secondary">🗑️ مسودہ صاف کریں</button>
@@ -109,6 +109,7 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -192,41 +193,154 @@ async function loadExistingPost(encoded){
     const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);$('images').value=[...new Set(imgs)].join('\n');
     const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);$('videos').value=[...new Set(vids)].join('\n');
     const clean=body.replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'').replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'').trim();
-    editor().innerHTML=/<[a-z][\s\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\n/g,'<br>');
+    editor().innerHTML=window.marked?marked.parse(clean):(/<[a-z][\\s\\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\\n/g,'<br>'));
     savedRange=null;editor().focus();window.scrollTo({top:0,behavior:'smooth'});alert('مضمون ایڈیٹر میں کھل گیا ہے۔');
   }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔')}
 }
 async function publish(){
-  const title=$('title').value.trim(),html=editor().innerHTML.trim();
-  const password=$('apiPassword').value;
+  const title=$('title').value.trim();
+  const htmlContent=editor().innerHTML.trim();
+  const token=$('githubToken').value.trim();
   if(!title||!editor().innerText.trim()){alert('براہِ کرم عنوان اور مضمون دونوں درج کریں۔');return}
-  if(!password){alert('براہِ کرم محفوظ API پاس ورڈ درج کریں۔');$('apiPassword').focus();return}
+  if(!token){alert('براہِ کرم GitHub Fine-grained Token درج کریں۔');$('githubToken').focus();return}
   const button=document.querySelector('.actions button.primary');
-  const oldLabel=button.textContent;button.disabled=true;button.textContent='⏳ محفوظ کیا جا رہا ہے…';
+  const oldLabel=button.textContent;
+  button.disabled=true;button.textContent='⏳ GitHub پر محفوظ کیا جا رہا ہے…';
   try{
-    const response=await fetch('https://mutalaa.cu.ma/api/save-article.php',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-API-Password':password},
-      body:JSON.stringify({
-        title,
-        category:$('category').value,
-        alignment:$('alignment').value,
-        content:html,
-        images:$('images').value.trim(),
-        videos:$('videos').value.trim(),
-        editFile:editFile
-      })
-    });
-    let result={};try{result=await response.json()}catch(e){}
-    if(!response.ok||!result.ok)throw new Error(result.error||('سرور نے HTTP '+response.status+' واپس کیا۔'));
-    editFile=result.file||editFile;
-    alert((result.message||'مضمون محفوظ ہوگیا۔')+'\nفائل: '+(result.file||'')+'\nویب سائٹ اپ ڈیٹ ہونے میں چند منٹ لگ سکتے ہیں۔');
+    const owner='mutalaa92',repo='mutalaa92.github.io',branch='main';
+    const apiRoot='https://api.github.com/repos/'+owner+'/'+repo+'/contents/';
+    const headers={
+      'Accept':'application/vnd.github+json',
+      'Authorization':'Bearer '+token,
+      'X-GitHub-Api-Version':'2022-11-28',
+      'Content-Type':'application/json'
+    };
+    async function getRepoFile(path){
+      const response=await fetch(apiRoot+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(branch),{headers:headers,cache:'no-store'});
+      if(response.status===404)return null;
+      if(!response.ok){
+        let message='GitHub سے فائل حاصل نہیں ہو سکی (HTTP '+response.status+').';
+        try{const err=await response.json();if(err.message)message=err.message}catch(e){}
+        throw new Error(message);
+      }
+      return await response.json();
+    }
+    function decodeBase64Utf8(value){
+      const binary=atob(String(value||'').replace(/\s/g,''));
+      const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+    function encodeUtf8Base64(value){
+      const bytes=new TextEncoder().encode(String(value));
+      let binary='';
+      for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+      return btoa(binary);
+    }
+    async function writeRepoFile(path,content,message,isBase64){
+      const current=await getRepoFile(path);
+      const payload={message:message,branch:branch,content:isBase64?content:encodeUtf8Base64(content)};
+      if(current&&current.sha)payload.sha=current.sha;
+      const response=await fetch(apiRoot+path.split('/').map(encodeURIComponent).join('/'),{
+        method:'PUT',headers:headers,body:JSON.stringify(payload)
+      });
+      let result={};try{result=await response.json()}catch(e){}
+      if(!response.ok)throw new Error((result.message||('GitHub نے HTTP '+response.status+' واپس کیا۔'))+' ('+path+')');
+      return result;
+    }
+    const now=new Date();
+    const date=now.toISOString();
+    const datePrefix=date.slice(0,10);
+    const categories={
+      'عقیدۂ توحید':'tawheed',
+      'تاریخِ اسلام':'history',
+      'مشاجراتِ صحابہ':'sahaba',
+      'فرق و مذاهب':'sects',
+      'حدیث و آثار':'hadith',
+      'کتبِ اسلامیہ':'books',
+      'سیرت النبی ﷺ':'seerah',
+      'سیرتِ صحابہ و تابعین':'scholars',
+      'حالاتِ حاضرہ':'current'
+    };
+    const category=$('category').value;
+    const categoryKey=categories[category]||'current';
+    const alignmentMap={'جسٹیفائی':'justify','دائیں':'right','بائیں':'left','درمیان':'center'};
+    const alignment=alignmentMap[$('alignment').value]||'justify';
+    const indexFile=await getRepoFile('data/posts.json');
+    if(!indexFile)throw new Error('data/posts.json فائل GitHub ریپوزٹری میں نہیں ملی۔');
+    let posts;
+    try{posts=JSON.parse(decodeBase64Utf8(indexFile.content))}catch(e){throw new Error('data/posts.json درست JSON نہیں ہے۔')}
+    if(!Array.isArray(posts))throw new Error('data/posts.json کی ساخت غیر متوقع ہے۔');
+    const oldEntry=editFile?posts.find(p=>p.file===editFile):null;
+    const issue=oldEntry&&oldEntry.issue?Number(oldEntry.issue):Math.max(0,...posts.map(p=>Number(p.issue)||0))+1;
+    const postFile=editFile||datePrefix+'-article-'+issue+'.md';
+
+    const holder=document.createElement('div');
+    holder.innerHTML=htmlContent;
+    let imageNumber=0;
+    const localImages=[...holder.querySelectorAll('img[src^="data:image/"]')];
+    for(const img of localImages){
+      const match=img.src.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,([\s\S]+)$/);
+      if(!match)throw new Error('مضمون میں شامل ایک تصویر کا ڈیٹا درست نہیں ہے۔');
+      const mime=match[1].toLowerCase();
+      const ext=({'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/gif':'gif','image/webp':'webp','image/svg+xml':'svg','image/avif':'avif'})[mime];
+      if(!ext)throw new Error('اس تصویر کی قسم معاون نہیں: '+mime);
+      imageNumber++;
+      const imagePath='assets/uploads/'+datePrefix+'-'+issue+'-'+imageNumber+'.'+ext;
+      await writeRepoFile(imagePath,match[2].replace(/\s/g,''),'Upload article image: '+imagePath,true);
+      img.src='https://mutalaa92.github.io/'+imagePath;
+      img.removeAttribute('srcset');
+    }
+    const imageUrls=$('images').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    for(const url of imageUrls){
+      if(!/^https?:\/\//i.test(url))continue;
+      if([...holder.querySelectorAll('img')].some(img=>img.src===url||img.getAttribute('src')===url))continue;
+      const img=document.createElement('img');img.src=url;img.alt=title;img.style.maxWidth='100%';img.style.height='auto';
+      const p=document.createElement('p');p.appendChild(img);holder.appendChild(p);
+    }
+    const videoUrls=$('videos').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    for(const url of videoUrls){
+      const match=url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+      if(!match)continue;
+      const embed='https://www.youtube-nocookie.com/embed/'+match[1];
+      if([...holder.querySelectorAll('iframe')].some(frame=>frame.src===embed||frame.getAttribute('src')===embed))continue;
+      const wrapper=document.createElement('div');wrapper.className='video-embed';
+      const frame=document.createElement('iframe');frame.src=embed;frame.title=title;frame.loading='lazy';frame.setAttribute('allowfullscreen','');
+      frame.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+      frame.style.width='100%';frame.style.aspectRatio='16 / 9';frame.style.border='0';
+      wrapper.appendChild(frame);holder.appendChild(wrapper);
+    }
+    const body=holder.innerHTML.trim();
+    const safeTitle=title.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\r?\n/g,' ');
+    const safeCategory=category.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+    const markdown='---\n'+
+      'title: "'+safeTitle+'"\n'+
+      'category: "'+safeCategory+'"\n'+
+      'category_key: "'+categoryKey+'"\n'+
+      'alignment: "'+alignment+'"\n'+
+      'date: "'+date+'"\n'+
+      '---\n\n'+body+'\n';
+    await writeRepoFile('_posts/'+postFile,markdown,(editFile?'Update article: ':'Publish article: ')+title,false);
+
+    const entry={
+      file:postFile,title:title,category:category,categoryKey:categoryKey,
+      alignment:alignment,date:date,issue:issue
+    };
+    posts=posts.filter(p=>p.file!==postFile);
+    posts.unshift(entry);
+    posts.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    await writeRepoFile('data/posts.json',JSON.stringify(posts,null,2)+'\n','Update posts index: '+title,false);
+
+    const wasEditing=Boolean(editFile);
+    editFile=postFile;
+    $('githubToken').value='';
+    alert((wasEditing?'مضمون GitHub پر محفوظ ہوگیا۔':'مضمون GitHub پر شائع ہوگیا۔')+'\nفائل: '+postFile+'\nGitHub Pages پر تبدیلی ظاہر ہونے میں چند منٹ لگ سکتے ہیں۔');
   }catch(e){
     console.error(e);
-    alert('مضمون محفوظ نہیں ہوسکا۔\n'+(e.message||'API سے رابطہ نہیں ہوسکا۔')+'\n\nیقینی بنائیں کہ cPanel پر API فائلیں اپ لوڈ اور config.php مکمل طور پر ترتیب دی گئی ہے۔');
-  }finally{button.disabled=false;button.textContent=oldLabel}
+    alert('GitHub پر مضمون محفوظ نہیں ہوسکا۔\n'+(e.message||'نامعلوم خرابی')+'\n\nچیک کریں کہ ٹوکن اسی ریپوزٹری کے لیے Contents: Read and write اجازت رکھتا ہے۔ ٹوکن چیٹ میں نہ بھیجیں۔');
+  }finally{
+    button.disabled=false;button.textContent=oldLabel;
+  }
 }
-
 function insertImage(){
   const input=$('imageFile');if(!input.files||!input.files[0]){alert('پہلے تصویر منتخب کریں۔');return}
   const file=input.files[0];
