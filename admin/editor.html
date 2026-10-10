@@ -109,7 +109,6 @@ button{border:0;border-radius:9px;padding:11px 24px;font:inherit;font-weight:bol
 </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -193,7 +192,7 @@ async function loadExistingPost(encoded){
     const imgs=[...body.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g)].map(x=>x[1]);$('images').value=[...new Set(imgs)].join('\n');
     const vids=[...body.matchAll(/youtube\.com\/embed\/([^?"'&\/]+)/gi)].map(x=>'https://www.youtube.com/watch?v='+x[1]);$('videos').value=[...new Set(vids)].join('\n');
     const clean=body.replace(/\n?\n?!\[[^\]]*\]\(https?:\/\/[^)]+\)/g,'').replace(/\n?\n?<div class="video-embed">[\s\S]*?<\/div>/gi,'').trim();
-    editor().innerHTML=window.marked?marked.parse(clean):(/<[a-z][\\s\\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\\n/g,'<br>'));
+    editor().innerHTML=/<[a-z][\\s\\S]*>/i.test(clean)?clean:escapeHtml(clean).replace(/\\n/g,'<br>');
     savedRange=null;editor().focus();window.scrollTo({top:0,behavior:'smooth'});alert('مضمون ایڈیٹر میں کھل گیا ہے۔');
   }catch(e){console.error(e);alert('مضمون لوڈ نہیں ہو سکا۔')}
 }
